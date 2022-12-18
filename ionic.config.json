@@ -1,0 +1,7 @@
+{
+  "name": "weight-mate-ionic",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
