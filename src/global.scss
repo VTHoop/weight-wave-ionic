@@ -24,3 +24,21 @@
 @import "~@ionic/angular/css/text-alignment.css";
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
+
+:root {
+    /* Set the background of the entire app */
+    // --ion-background-color: #ff3700;
+    --ion-text-color: var(--ion-color-primary);
+
+    /* Set the font family of the entire app */
+    --ion-font-family: -apple-system, BlinkMacSystemFont, 'Roboto', 'Raleway', sans-serif;
+  }
+
+h2 {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.container {
+    padding: 10px;
+}

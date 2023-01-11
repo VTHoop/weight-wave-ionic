@@ -1,0 +1,18 @@
+.trends {
+    background-color: #e8e8e8;
+    h2 {
+        text-align: left;
+    }
+    h3 {
+        font-size: 18px;
+        margin-top: 0;
+    }
+    &__header {
+        padding: 20px;
+    }
+    &__charts {
+        & > * {
+            margin-bottom: 20px;
+        }
+    }
+}

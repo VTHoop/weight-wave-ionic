@@ -1,0 +1,14 @@
+<ion-grid *ngIf="weightLog$ | async as weightLog">
+  <ion-row>
+    <ion-col>Date</ion-col>
+    <ion-col>Weight</ion-col>
+    <ion-col>Fat</ion-col>
+    <ion-col>Muscle</ion-col>
+  </ion-row>
+  <ion-row *ngFor="let entry of weightLog">
+    <ion-col>{{ entry.weightDate | date }}</ion-col>
+    <ion-col>{{ entry.weightAmount }}</ion-col>
+    <ion-col>{{ entry.fatAmount }}</ion-col>
+    <ion-col>{{ entry.muscleAmount }}</ion-col>
+  </ion-row>
+</ion-grid>
