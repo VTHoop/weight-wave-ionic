@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Chart } from 'chart.js/auto';
-import { Subscription, map } from 'rxjs';
+import { Subscription, map, BehaviorSubject, combineLatest } from 'rxjs';
 import { AverageWeight } from 'src/models/models/weight-log.model';
 import { WeightLogService } from 'src/services/weight-log.service';
 
@@ -13,7 +13,7 @@ import { WeightLogService } from 'src/services/weight-log.service';
 })
 export class TrendChartsComponent implements OnInit {
   openSubscriptions: Subscription[] = [];
-  daysToShow: number = 30;
+  daysToShow$: BehaviorSubject<number> = new BehaviorSubject(30);
 
   plugin = {
     id: 'customCanvasBackgroundColor',
@@ -36,11 +36,25 @@ export class TrendChartsComponent implements OnInit {
     this.createCharts();
   }
 
+  changeFilter(filterValue: string): void {
+    switch (filterValue) {
+      case 'Month':
+        this.daysToShow$.next(30);
+        break;
+      case 'Quarter':
+        this.daysToShow$.next(120);
+        break;
+      case 'Year':
+        this.daysToShow$.next(365);
+        break;
+    }
+  }
+
   createCharts = () => {
     this.openSubscriptions.push(
-      this.weightLogService.avgWeightLog$
+      combineLatest([this.weightLogService.avgWeightLog$, this.daysToShow$])
         .pipe(
-          map((log) => {
+          map(([log, daysToShow]) => {
             this.resetChart('weight-chart');
             this.resetChart('fat-chart');
             this.resetChart('muscle-chart');
@@ -49,7 +63,7 @@ export class TrendChartsComponent implements OnInit {
             const fatValues: (number | null)[] = [];
             const muscleValues: (number | null)[] = [];
 
-            for (let i = this.daysToShow; i >= log.length; i--) {
+            for (let i = daysToShow; i >= log.length; i--) {
               labels.push(
                 this.dateformat.transform(
                   new Date(
@@ -63,8 +77,7 @@ export class TrendChartsComponent implements OnInit {
               fatValues.push(null);
               muscleValues.push(null);
             }
-
-            log.map((row) => {
+            log.slice(daysToShow * -1).map((row) => {
               labels.push(this.dateformat.transform(row.avgWeightDate));
               weightValues.push(row.avgWeightAmount);
               if (row.avgFatAmount) {
@@ -117,6 +130,7 @@ export class TrendChartsComponent implements OnInit {
         backgroundColor: '#ffffff',
         borderColor: '#ffffff',
         tension: 0.5,
+        pointRadius: 1,
       },
     ],
   });

@@ -4,6 +4,11 @@
       <h2>Over Time</h2>
     </ion-text>
   </div>
+  <div class="trends__filter">
+    <div (click)="changeFilter('Month')">Month</div>
+    <div (click)="changeFilter('Quarter')">Quarter</div>
+    <div (click)="changeFilter('Year')">Year</div>
+  </div>
   <div class="trends__charts">
     <div>
       <div><canvas id="weight-chart"></canvas></div>
