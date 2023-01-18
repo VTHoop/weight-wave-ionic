@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import {
   FormGroup,
@@ -26,7 +27,8 @@ export class TabsPage {
 
   constructor(
     private fb: FormBuilder,
-    private weightLogService: WeightLogService
+    private weightLogService: WeightLogService,
+    private datePipe: DatePipe
   ) {}
 
   ngOnInit(): void {
@@ -52,9 +54,7 @@ export class TabsPage {
     const today = new Date();
     this.weightEntryForm = this.fb.group({
       weightDate: new FormControl(
-        `${today.getFullYear()}-${(today.getMonth() + 1)
-          .toString()
-          .padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`,
+        this.datePipe.transform(today, 'y-MM-ddTHH:mm'),
         Validators.required
       ),
       weightAmount: new FormControl(null, [

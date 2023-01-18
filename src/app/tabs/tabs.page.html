@@ -41,7 +41,7 @@
         [formGroup]="weightEntryForm"
         (ngSubmit)="onSubmit(weightEntryForm.value)"
       >
-        <ion-datetime presentation="date" formControlName="weightDate">
+        <ion-datetime formControlName="weightDate">
           <span slot="title">Choose the Date You Logged This Weight</span>
         </ion-datetime>
         <ion-item>
