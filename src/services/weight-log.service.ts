@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { map, Observable, shareReplay } from 'rxjs';
 import {
   AverageWeight,
+  WeightLog,
   WeightLogId,
   WeightLogResponse,
   WeightLogResponseId,
@@ -85,10 +86,38 @@ export class WeightLogService {
       );
   }
 
-  addWeightLogEntry(data: any) {
+  addWeightLogEntry(data: WeightLog) {
+    if (!data.muscleAmount) {
+      delete data.muscleAmount;
+      delete data.muscleUnit;
+    }
+    if (!data.fatAmount) {
+      delete data.fatAmount;
+      delete data.fatUnit;
+    }
     return this.afs
       .collection(`${this._firebaseCollection}`)
       .add(Object.assign({}, data))
       .then(() => 'Entry Added Successfully');
+  }
+
+  updateWeightLogEntry(id: string, data: WeightLog) {
+    return this.afs
+      .doc(`${this._firebaseCollection}/${id}`)
+      .update(data)
+      .then(() => 'Profile Updated Successfully');
+  }
+
+  deleteWeightLogEntry(id: string) {
+    this.afs
+      .collection(`${this._firebaseCollection}`)
+      .doc(id)
+      .delete()
+      .then(() => {
+        'Document successfully deleted!';
+      })
+      .catch((error) => {
+        console.error('Error removing document: ', error);
+      });
   }
 }

@@ -1,85 +1,96 @@
-<div class="week-summary container">
-  <div class="week-summary__header">
+<div
+  class="snapshot container"
+  *ngIf="compareToLastWeek$ | async as compareToLastWeek"
+>
+  <div class="snapshot__header">
     <ion-text>
-      <h2>Recent Trends</h2>
+      <h2>Good afternoon, Patrick</h2>
     </ion-text>
   </div>
-
-  <ion-grid *ngIf="compareToLastWeek$ | async as compareToLastWeek">
-    <ion-row>
+  <ion-grid>
+    <ion-row class="snapshot__profile">
+      <div class="snapshot__profile-container">
+        <img
+          class="snapshot__profile-picture"
+          src="/assets/person-circle-outline.svg"
+          alt=""
+        />
+      </div>
+    </ion-row>
+    <ion-row class="snapshot__row--overall">
       <ion-col>
-        <ion-card class="week-summary__overall">
-          <ion-card-header>
+        <ion-card class="snapshot--overall">
+          <!-- <ion-card-header>
             <ion-card-title>Overall</ion-card-title>
-          </ion-card-header>
-
-          <ion-card-content>
-            <div class="overview__weight">
-              {{ compareToLastWeek[0].avgWeightAmount | number : "1.1-2" }}
+          </ion-card-header> -->
+          <ion-card-content class="snapshot__content">
+            <div class="snapshot__weight">
+              <div class="snapshot__title">Current Avg Weight</div>
+              <div class="snapshot__value">
+                {{ compareToLastWeek[0].avgWeightAmount | number : "1.1-2" }}
+              </div>
             </div>
-            <div class="overview__compare">
-              <div>
+            <div class="snapshot__placeholder"></div>
+            <div class="snapshot__compare">
+              <div class="snapshot__title">Since Last Week</div>
+              <div class="snapshot__value">
                 {{
                   compareToLastWeek[0].avgWeightAmount -
                     compareToLastWeek[1].avgWeightAmount | number : "1.1-2"
                 }}
               </div>
-              <div>
-                <!-- <mat-icon aria-hidden="false" aria-label="Example home icon"
-            >arrow_drop_up</mat-icon
-          > -->
-              </div>
             </div>
           </ion-card-content>
         </ion-card>
       </ion-col>
+    </ion-row>
+    <ion-row>
       <ion-col>
-        <ion-card class="week-summary__fat">
+        <ion-card class="snapshot__fat">
           <ion-card-header>
             <ion-card-title>Fat</ion-card-title>
           </ion-card-header>
-
-          <ion-card-content>
-            <div class="overview__weight">
-              {{ compareToLastWeek[0].avgFatAmount | number : "1.1-2" }}
+          <ion-card-content class="snapshot__content">
+            <div class="snapshot__weight">
+              <div class="snapshot__subtitle">Current Avg</div>
+              <div class="snapshot__value">
+                {{ compareToLastWeek[0].avgFatAmount | number : "1.1-2" }}
+              </div>
             </div>
-            <div class="overview__compare">
-              <div>
+            <div class="snapshot__placeholder"></div>
+            <div class="snapshot__compare">
+              <div class="snapshot__subtitle">Change</div>
+              <div class="snapshot__value">
                 {{
                   compareToLastWeek[0].avgFatAmount -
                     compareToLastWeek[1].avgFatAmount | number : "1.1-2"
                 }}
               </div>
-              <div>
-                <!-- <mat-icon aria-hidden="false" aria-label="Example home icon"
-            >arrow_drop_up</mat-icon
-          > -->
-              </div>
             </div>
           </ion-card-content>
         </ion-card>
       </ion-col>
       <ion-col>
-        <ion-card class="week-summary__muscle">
+        <ion-card class="snapshot__muscle">
           <ion-card-header>
             <ion-card-title>Muscle</ion-card-title>
           </ion-card-header>
 
-          <ion-card-content>
-            <div class="overview__weight">
-              {{ compareToLastWeek[0].avgMuscleAmount | number : "1.1-2" }}
+          <ion-card-content class="snapshot__content">
+            <div class="snapshot__weight">
+              <div class="snapshot__subtitle">Current Avg</div>
+              <div class="snapshot__value">
+                {{ compareToLastWeek[0].avgMuscleAmount | number : "1.1-2" }}
+              </div>
             </div>
-            <div class="overview__compare">
-              <div>
+            <div class="snapshot__placeholder"></div>
+            <div class="snapshot__compare">
+              <div class="snapshot__subtitle">Change</div>
+              <div class="snapshot__value">
                 {{
                   compareToLastWeek[0].avgMuscleAmount -
                     compareToLastWeek[1].avgMuscleAmount | number : "1.1-2"
                 }}
-              </div>
-              <div>
-                <!-- <mat-icon aria-hidden="false" aria-label="Example home icon"
-            >arrow_drop_up</mat-icon
-          > -->
               </div>
             </div>
           </ion-card-content>

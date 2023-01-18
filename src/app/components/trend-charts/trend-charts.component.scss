@@ -1,5 +1,4 @@
 .trends {
-    background-color: #e8e8e8;
     h2 {
         text-align: left;
     }
@@ -23,4 +22,9 @@
             margin-bottom: 20px;
         }
     }
+}
+
+.selected {
+    border-bottom: solid var(--ion-color-secondary) 4px;
+    padding-bottom: 4px;
 }

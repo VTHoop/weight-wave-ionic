@@ -49,11 +49,20 @@ export class TabsPage {
   }
 
   createForm() {
+    const today = new Date();
     this.weightEntryForm = this.fb.group({
-      weightDate: new FormControl('', Validators.required),
-      weightAmount: new FormControl('', Validators.required),
-      muscleAmount: new FormControl(),
-      fatAmount: new FormControl(),
+      weightDate: new FormControl(
+        `${today.getFullYear()}-${(today.getMonth() + 1)
+          .toString()
+          .padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`,
+        Validators.required
+      ),
+      weightAmount: new FormControl(null, [
+        Validators.required,
+        Validators.pattern('^\\d*\\.?\\d+$'),
+      ]),
+      muscleAmount: new FormControl(null, Validators.pattern('^\\d*\\.?\\d+$')),
+      fatAmount: new FormControl(null, Validators.pattern('^\\d*\\.?\\d+$')),
     });
   }
 
@@ -69,6 +78,7 @@ export class TabsPage {
       muscleUnit: value.muscleAmount ? WeightUnit.LB : undefined,
       fatUnit: value.fatAmount ? WeightUnit.LB : undefined,
     };
+
     this.weightLogService.addWeightLogEntry(newWeightLog);
     this.weightEntryForm.reset();
     this.setOpen(false);

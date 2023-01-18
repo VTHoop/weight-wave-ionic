@@ -1,14 +1,119 @@
-<ion-grid *ngIf="weightLog$ | async as weightLog">
-  <ion-row>
-    <ion-col>Date</ion-col>
-    <ion-col>Weight</ion-col>
-    <ion-col>Fat</ion-col>
-    <ion-col>Muscle</ion-col>
+<ion-grid class="weight-log" *ngIf="weightLog$ | async as weightLog">
+  <ion-row class="weight-log__header">
+    <ion-col size="3"></ion-col>
+    <ion-col size="3">Weight</ion-col>
+    <ion-col size="3">Fat</ion-col>
+    <ion-col size="3">Muscle</ion-col>
   </ion-row>
-  <ion-row *ngFor="let entry of weightLog">
-    <ion-col>{{ entry.weightDate | date }}</ion-col>
-    <ion-col>{{ entry.weightAmount }}</ion-col>
-    <ion-col>{{ entry.fatAmount }}</ion-col>
-    <ion-col>{{ entry.muscleAmount }}</ion-col>
+  <ion-row
+    *ngFor="let entry of weightLog"
+    (click)="presentPopover($event, entry)"
+  >
+    <ion-col size="3" class="weight-log__date">
+      <div>
+        {{ entry.weightDate | date : "MMM d" }}
+      </div>
+      <div>{{ entry.weightDate | date : "EEE" | uppercase }}</div>
+    </ion-col>
+    <ion-col size="3">{{ entry.weightAmount }}</ion-col>
+    <ion-col size="3">{{ entry.fatAmount }}</ion-col>
+    <ion-col size="3">{{ entry.muscleAmount }}</ion-col>
   </ion-row>
 </ion-grid>
+<ion-popover
+  #popover
+  [isOpen]="isOpen"
+  (didDismiss)="dismissPopover()"
+  class="entry-popover"
+>
+  <ng-template>
+    <ion-content class="ion-padding">
+      <div class="entry-popover__title">{{ weightDate | date }}</div>
+
+      <form
+        [formGroup]="weightEditForm"
+        (ngSubmit)="onSubmit(weightEditForm.value)"
+      >
+        <ion-item>
+          <ion-label>Weight</ion-label>
+          <ion-input
+            type="text"
+            inputmode="numeric"
+            formControlName="weightAmount"
+          ></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>Fat</ion-label>
+          <ion-input
+            type="text"
+            inputmode="numeric"
+            formControlName="fatAmount"
+          ></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>Muscle</ion-label>
+          <ion-input
+            type="text"
+            inputmode="numeric"
+            formControlName="muscleAmount"
+          ></ion-input>
+        </ion-item>
+        <ion-list>
+          <ng-container *ngIf="!inEditMode; else editButtons">
+            <ion-item
+              (click)="makeFormEditable(selectedDoc)"
+              class="entry-popover__item entry-popover__item--edit"
+            >
+              <ion-label class="entry-popover__item-label">
+                <ion-button
+                  color="secondary"
+                  expand="block"
+                  class="entry-popover__button"
+                >
+                  <ion-icon name="pencil"></ion-icon>
+                  <span>Edit</span>
+                </ion-button>
+              </ion-label>
+            </ion-item>
+            <ion-item
+              (click)="deleteEntry()"
+              class="entry-popover__item entry-popover__item--delete"
+            >
+              <ion-label class="entry-popover__item-label">
+                <ion-button color="danger" class="entry-popover__button">
+                  <ion-icon name="trash-bin"></ion-icon>
+                  <span>Delete</span>
+                </ion-button>
+              </ion-label>
+            </ion-item>
+          </ng-container>
+          <ng-template #editButtons
+            ><ion-item class="entry-popover__item">
+              <ion-label class="entry-popover__item-label">
+                <ion-button
+                  type="submit"
+                  [disabled]="!(weightEditForm.valid && weightEditForm.dirty)"
+                  class="entry-popover__button"
+                >
+                  <ion-icon name="save"></ion-icon>
+                  <span>Update Entry</span>
+                </ion-button>
+              </ion-label>
+            </ion-item>
+            <ion-item
+              (click)="cancelChange()"
+              class="entry-popover__item entry-popover__item--cancel"
+            >
+              <ion-label class="entry-popover__item-label">
+                <ion-button color="danger" class="entry-popover__button">
+                  <ion-icon name="close-circle"></ion-icon>
+                  <span>Cancel Change</span>
+                </ion-button>
+              </ion-label>
+            </ion-item></ng-template
+          >
+        </ion-list>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-popover>

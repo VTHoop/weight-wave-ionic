@@ -1,0 +1,55 @@
+.weight-log {
+    font-size: 14px;
+    padding: 30px 20px;
+
+    ion-row {
+        transform: skew(-10deg);
+    }
+
+    ion-row:nth-child(even) {
+        background-color: var(--alternate-grid-row);
+    }
+
+    ion-col {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    &__header {
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    &__date {
+        color: var(--ion-text-color);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+}
+
+.entry-popover {
+    &__title {
+        text-align: center;
+        font-size: 18px;
+        font-weight: 700;
+        padding: 10px
+    }
+
+    &__button {
+      width: 100%;
+    }
+
+    &__item-label {
+        cursor: pointer;
+
+        display: flex;
+        align-items: center;
+        ion-icon {
+            margin-right: 5px;
+        }
+    }
+}
+
+

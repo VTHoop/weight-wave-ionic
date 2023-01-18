@@ -1,3 +1,8 @@
+<div class="snapshot__header">
+  <ion-text>
+    <h2>Snapshot</h2>
+  </ion-text>
+</div>
 <ion-tabs>
   <ion-tab-bar slot="bottom">
     <ion-tab-button tab="tab1">
@@ -41,15 +46,27 @@
         </ion-datetime>
         <ion-item>
           <ion-label>Weight</ion-label>
-          <ion-input type="number" formControlName="weightAmount"></ion-input>
+          <ion-input
+            type="text"
+            inputmode="numeric"
+            formControlName="weightAmount"
+          ></ion-input>
         </ion-item>
         <ion-item>
           <ion-label>Fat</ion-label>
-          <ion-input type="number" formControlName="fatAmount"></ion-input>
+          <ion-input
+            type="text"
+            inputmode="numeric"
+            formControlName="fatAmount"
+          ></ion-input>
         </ion-item>
         <ion-item>
           <ion-label>Muscle</ion-label>
-          <ion-input type="number" formControlName="muscleAmount"></ion-input>
+          <ion-input
+            type="text"
+            inputmode="numeric"
+            formControlName="muscleAmount"
+          ></ion-input>
         </ion-item>
         <ion-button
           type="submit"

@@ -5,9 +5,24 @@
     </ion-text>
   </div>
   <div class="trends__filter">
-    <div (click)="changeFilter('Month')">Month</div>
-    <div (click)="changeFilter('Quarter')">Quarter</div>
-    <div (click)="changeFilter('Year')">Year</div>
+    <div
+      (click)="changeFilter(ChartSpan.Month)"
+      [ngClass]="{ selected: selectedChartSpan === ChartSpan.Month }"
+    >
+      Month
+    </div>
+    <div
+      (click)="changeFilter(ChartSpan.Quarter)"
+      [ngClass]="{ selected: selectedChartSpan === ChartSpan.Quarter }"
+    >
+      Quarter
+    </div>
+    <div
+      (click)="changeFilter(ChartSpan.Year)"
+      [ngClass]="{ selected: selectedChartSpan === ChartSpan.Year }"
+    >
+      Year
+    </div>
   </div>
   <div class="trends__charts">
     <div>

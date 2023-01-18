@@ -1,5 +1,32 @@
-ion-tab-button:nth-last-of-type(1) {
-    ion-icon {
-      fill:green;
-    }
+ion-tab-bar {
+  --ion-tab-bar-background: var(--ion-color-primary);
+  height: 60px;
 }
+
+ion-tab-button {
+  --color: var(--ion-color-primary-contrast);
+  --color-selected: var(--ion-color-primary-contrast);
+
+  &::before {
+    background-color: transparent;
+    display: block;
+    content: "";
+    margin: 0 auto;
+    width: 60%;
+    height: 4px;
+  }
+
+  &.tab-selected::before {
+    background-color: var(--ion-color-primary-contrast);
+  }
+}
+
+ion-tab-button:nth-last-of-type(1) {
+  --background: var(--ion-color-secondary);
+  --color: var(--ion-color-primary-contrast);
+
+  ion-icon {
+    fill:white;
+  }
+}
+

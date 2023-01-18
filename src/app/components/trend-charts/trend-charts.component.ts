@@ -14,6 +14,8 @@ import { WeightLogService } from 'src/services/weight-log.service';
 export class TrendChartsComponent implements OnInit {
   openSubscriptions: Subscription[] = [];
   daysToShow$: BehaviorSubject<number> = new BehaviorSubject(30);
+  selectedChartSpan = ChartSpan.Month;
+  public ChartSpan: any = ChartSpan;
 
   plugin = {
     id: 'customCanvasBackgroundColor',
@@ -36,16 +38,19 @@ export class TrendChartsComponent implements OnInit {
     this.createCharts();
   }
 
-  changeFilter(filterValue: string): void {
+  changeFilter(filterValue: ChartSpan): void {
     switch (filterValue) {
-      case 'Month':
+      case ChartSpan.Month:
         this.daysToShow$.next(30);
+        this.selectedChartSpan = ChartSpan.Month;
         break;
-      case 'Quarter':
+      case ChartSpan.Quarter:
         this.daysToShow$.next(120);
+        this.selectedChartSpan = ChartSpan.Quarter;
         break;
-      case 'Year':
+      case ChartSpan.Year:
         this.daysToShow$.next(365);
+        this.selectedChartSpan = ChartSpan.Year;
         break;
     }
   }
@@ -78,7 +83,9 @@ export class TrendChartsComponent implements OnInit {
               muscleValues.push(null);
             }
             log.slice(daysToShow * -1).map((row) => {
-              labels.push(this.dateformat.transform(row.avgWeightDate));
+              labels.push(
+                this.dateformat.transform(row.avgWeightDate, 'MMM d')
+              );
               weightValues.push(row.avgWeightAmount);
               if (row.avgFatAmount) {
                 fatValues.push(row.avgFatAmount);
@@ -209,13 +216,11 @@ export class TrendChartsComponent implements OnInit {
               ticks: {
                 callback: function (val, index) {
                   // Hide every 2nd tick label
-                  // return index % 5 === 0 ? labels[+val] : '';
-
-                  index === 0 ||
-                    index === labels.length - 1 ||
-                    index === Math.ceil((labels.length - 1) / 2);
+                  index % 5 === 0 ? this.getLabelForValue(+val) : '';
                 },
                 color: 'white',
+                minRotation: 0,
+                maxRotation: 0,
               },
             },
           },
@@ -229,4 +234,10 @@ export class TrendChartsComponent implements OnInit {
       subscription.unsubscribe()
     );
   }
+}
+
+enum ChartSpan {
+  Month,
+  Quarter,
+  Year,
 }
