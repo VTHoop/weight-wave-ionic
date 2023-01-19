@@ -9,29 +9,28 @@ export class MovingAverageService {
   constructor() {}
 
   getWeekByWeekAverage(
-    weightLog$: Observable<WeightLogId[]>,
+    weightLog: WeightLogId[],
     numWeeks: number,
     endDate: Date = new Date()
-  ): Observable<AverageWeight[]> {
+  ): AverageWeight[] {
     const originalEndDate = endDate;
-    return weightLog$.pipe(
-      // shareReplay(1),
-      map((log) => {
-        const weekAverages: AverageWeight[] = [];
-        for (let i = 0; i < numWeeks; i++) {
-          const week = this.getItemsForNumPreviousDays(log, endDate, 6);
-          weekAverages.push(this.calcMovingAverage(week, endDate, 7));
 
-          endDate = new Date(
-            endDate.getFullYear(),
-            endDate.getMonth(),
-            endDate.getDate() - 7
-          );
-        }
-        endDate = originalEndDate;
-        return weekAverages;
-      })
-    );
+    const weekAverages: AverageWeight[] = [];
+    for (let i = 0; i < numWeeks; i++) {
+      const week = this.getItemsForNumPreviousDays(weightLog, endDate, 6);
+      weekAverages.push(this.calcMovingAverage(week, endDate, 7));
+
+      endDate = new Date(
+        endDate.getFullYear(),
+        endDate.getMonth(),
+        endDate.getDate() - 7,
+        23,
+        59,
+        59
+      );
+    }
+    endDate = originalEndDate;
+    return weekAverages;
   }
 
   calcMovingAverageForEverything = (

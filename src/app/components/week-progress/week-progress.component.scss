@@ -2,13 +2,23 @@
 
 .snapshot {
     h2 {
-        text-align: left;
+      text-align: left;
     }
     h3 {
-        font-size: 18px;
-        margin-top: 0;
-
+      font-size: 18px;
+      font-weight: 700;
+      margin-top: 0;
     }
+
+    &__filter{
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      & > * {
+          cursor: pointer;
+      }
+  }
+
     ion-card {
         margin: 0;
         font-size: 14px;
@@ -40,7 +50,11 @@
     }
 
     &__header {
-        padding: 20px;
+        padding: 0 20px;
+        &-filter {
+          margin-top: 40px;
+          margin-bottom: -40px;
+        }
     }
 
     &__row {
@@ -127,4 +141,9 @@
             padding: 10px 15px 20px 15px;
         }
     }
+}
+
+.selected {
+  border-bottom: solid var(--ion-color-secondary) 4px;
+  padding-bottom: 4px;
 }

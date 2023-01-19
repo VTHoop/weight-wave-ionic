@@ -27,7 +27,7 @@ export class WeightLogService {
     private afs: AngularFirestore,
     movingAverageService: MovingAverageService
   ) {
-    this.weightLog$ = this.getWeightLogEntries().pipe(shareReplay(1));
+    this.weightLog$ = this.getWeightLogEntries();
     this.avgWeightLog$ = this.weightLog$.pipe(
       map((log) => movingAverageService.calcMovingAverageForEverything(log, 7))
     );
