@@ -1,8 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
 import { AverageWeight } from 'src/models/models/weight-log.model';
 import { WeightLogService } from 'src/services/weight-log.service';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { MovingAverageService } from 'src/services/moving-average.service';
+import { AnimationController } from '@ionic/angular';
 
 @Component({
   selector: 'app-week-progress',
@@ -10,6 +18,10 @@ import { MovingAverageService } from 'src/services/moving-average.service';
   styleUrls: ['./week-progress.component.scss'],
 })
 export class WeekProgressComponent implements OnInit {
+  @ViewChild('snapshotWeight', { read: ElementRef }) snapshotWeight: ElementRef;
+  @ViewChild('snapshotFat', { read: ElementRef }) snapshotFat: ElementRef;
+  @ViewChild('snapshotMuscle', { read: ElementRef }) snapshotMuscle: ElementRef;
+
   weekToWeekComparison$: Observable<AverageWeight[]>;
   weeksToCompare$: BehaviorSubject<number> = new BehaviorSubject(2);
   public ProgressPeriod: any = ProgressPeriod;
@@ -17,7 +29,8 @@ export class WeekProgressComponent implements OnInit {
 
   constructor(
     public weightLogService: WeightLogService,
-    public movingAverageService: MovingAverageService
+    public movingAverageService: MovingAverageService,
+    private animationCtrl: AnimationController
   ) {}
 
   ngOnInit(): void {
@@ -46,6 +59,7 @@ export class WeekProgressComponent implements OnInit {
         this.weeksToCompare$.next(5);
         break;
     }
+    this.playAnimation();
   }
 
   getSalutation(): string {
@@ -57,6 +71,19 @@ export class WeekProgressComponent implements OnInit {
     } else {
       return 'Good Evening';
     }
+  }
+
+  playAnimation() {
+    this.animationCtrl
+      .create('loading-animation')
+      .addElement(this.snapshotWeight.nativeElement)
+      .addElement(this.snapshotFat.nativeElement)
+      .addElement(this.snapshotMuscle.nativeElement)
+      .duration(500)
+      .iterations(1)
+      .fromTo('transform', 'translateY(20px)', 'translateY(0px)')
+      .fromTo('opacity', '0.2', '1')
+      .play();
   }
 }
 
