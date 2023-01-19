@@ -47,6 +47,17 @@ export class WeekProgressComponent implements OnInit {
         break;
     }
   }
+
+  getSalutation(): string {
+    const now = new Date();
+    if (now.getHours() >= 0 && now.getHours() < 11) {
+      return 'Good Morning';
+    } else if (now.getHours() >= 11 && now.getHours() < 19) {
+      return 'Good Afternoon';
+    } else {
+      return 'Good Evening';
+    }
+  }
 }
 
 enum ProgressPeriod {

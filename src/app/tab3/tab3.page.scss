@@ -1,0 +1,14 @@
+.profile {
+  padding: 40px;
+  &__item{
+    margin-bottom: 30px;
+    &-header{
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    &--metric{
+      padding-left: 20px;
+    }
+  }
+}

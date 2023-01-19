@@ -5,7 +5,7 @@
   <ng-container *ngIf="weeksToCompare$ | async as weeksToCompare">
     <div class="snapshot__header">
       <ion-text>
-        <h2>Good afternoon, Patrick</h2>
+        <h2>{{ getSalutation() }}, Patrick</h2>
       </ion-text>
       <div class="snapshot__header-filter">
         <h3>Since...</h3>
@@ -42,9 +42,6 @@
       <ion-row class="snapshot__row--overall">
         <ion-col>
           <ion-card class="snapshot--overall">
-            <!-- <ion-card-header>
-            <ion-card-title>Overall</ion-card-title>
-          </ion-card-header> -->
             <ion-card-content class="snapshot__content">
               <div class="snapshot__weight">
                 <div class="snapshot__title">Current Avg Weight</div>
@@ -131,3 +128,6 @@
     </ion-grid>
   </ng-container>
 </div>
+<ng-template #loading>
+  <ion-spinner name="circular"></ion-spinner>
+</ng-template>
