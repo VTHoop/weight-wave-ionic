@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Observable, map } from 'rxjs';
 import { AverageWeight, WeightLogId } from 'src/models/models/weight-log.model';
 
 @Injectable({
@@ -59,11 +58,20 @@ export class MovingAverageService {
     calcEndDate: Date,
     movingAvgAmount: number
   ): AverageWeight => {
-    const lastNumDays = this.getItemsForNumPreviousDays(
+    let lastNumDays = this.getItemsForNumPreviousDays(
       array,
       calcEndDate,
       movingAvgAmount
     );
+    // if no values have been entered during that period, increase scope until a value is found
+    while (lastNumDays.length === 0) {
+      movingAvgAmount = movingAvgAmount + 1;
+      lastNumDays = this.getItemsForNumPreviousDays(
+        array,
+        calcEndDate,
+        movingAvgAmount
+      );
+    }
     const avgs = this.avgAllValuesInArray(lastNumDays);
 
     return {
@@ -82,7 +90,10 @@ export class MovingAverageService {
     const begDate: Date = new Date(
       endDate.getFullYear(),
       endDate.getMonth(),
-      endDate.getDate() - prevDayscount
+      endDate.getDate() - prevDayscount,
+      23,
+      59,
+      59
     );
     return array.filter(
       (entry) =>
