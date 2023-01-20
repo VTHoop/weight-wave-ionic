@@ -1,35 +1,37 @@
 <ion-content [fullscreen]="true">
-  <div class="profile">
-    <div class="profile__item">
-      <div class="profile__item-header">Name</div>
-      <ion-item>
-        <ion-input></ion-input>
-      </ion-item>
-    </div>
-    <div class="profile__item">
-      <div class="profile__item-header">Weight Metric</div>
-      <div class="profile__item--metric">
-        <ion-segment value="pounds">
-          <ion-segment-button value="pounds">
-            <ion-label>Pounds (lbs)</ion-label>
-          </ion-segment-button>
-          <ion-segment-button value="kilograms">
-            <ion-label>Kilograms (kgs)</ion-label>
-          </ion-segment-button>
-        </ion-segment>
+  <form [formGroup]="profileForm" (ngSubmit)="onSubmit(profileForm.value)">
+    <div class="profile">
+      <div class="profile__item">
+        <div class="profile__item-header">Name</div>
+        <ion-item>
+          <ion-input type="text" formControlName="personName"></ion-input>
+        </ion-item>
       </div>
+      <div class="profile__item">
+        <div class="profile__item-header">Weight Metric</div>
+        <div class="profile__item--metric">
+          <ion-segment formControlName="weightMetricDisplay">
+            <ion-segment-button value="pounds">
+              <ion-label>Pounds (lbs)</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="kilograms">
+              <ion-label>Kilograms (kgs)</ion-label>
+            </ion-segment-button>
+          </ion-segment>
+        </div>
+      </div>
+      <div class="profile__item">
+        <div class="profile__item-header">Log Add'l Weight Values</div>
+        <ion-item>
+          <ion-label>Muscle</ion-label>
+          <ion-toggle slot="end" formControlName="isLoggingMuscle"></ion-toggle>
+        </ion-item>
+        <ion-item>
+          <ion-label>Fat</ion-label>
+          <ion-toggle slot="end" formControlName="isLoggingFat"></ion-toggle>
+        </ion-item>
+      </div>
+      <ion-button color="secondary" type="submit"> Submit </ion-button>
     </div>
-    <div class="profile__item">
-      <div class="profile__item-header">Log Add'l Weight Values</div>
-      <ion-item>
-        <ion-label>Muscle</ion-label>
-        <ion-toggle slot="end"></ion-toggle>
-      </ion-item>
-      <ion-item>
-        <ion-label>Fat</ion-label>
-        <ion-toggle slot="end"></ion-toggle>
-      </ion-item>
-    </div>
-    <ion-button color="secondary" type="submit"> Submit </ion-button>
-  </div>
+  </form>
 </ion-content>
