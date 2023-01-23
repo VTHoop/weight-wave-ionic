@@ -1,16 +1,20 @@
-import { WeightUnit } from '../enums/weight-unit.enum';
 import firebase from 'firebase/compat';
 import Timestamp = firebase.firestore.Timestamp;
 
 export interface WeightLog {
   weightDate: Date;
   creationDate: Date;
-  weightAmount: number;
-  weightUnit: WeightUnit;
+  weightAmount?: number;
   muscleAmount?: number;
-  muscleUnit?: WeightUnit;
   fatAmount?: number;
-  fatUnit?: WeightUnit;
+  // TODO: Make non-optional
+  weightLbs?: number;
+  muscleLbs?: number;
+  fatLbs?: number;
+  // TODO: Make non-optional
+  weightKgs?: number;
+  muscleKgs?: number;
+  fatKgs?: number;
 }
 
 export interface WeightLogId extends WeightLog {
@@ -21,11 +25,8 @@ export interface WeightLogResponse {
   weightDate: Timestamp;
   creationDate: Timestamp;
   weightAmount: number;
-  weightUnit: WeightUnit;
   muscleAmount?: number;
-  muscleUnit?: WeightUnit;
   fatAmount?: number;
-  fatUnit?: WeightUnit;
 }
 
 export interface WeightLogResponseId extends WeightLogResponse {

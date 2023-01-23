@@ -1,8 +1,3 @@
-<div class="snapshot__header">
-  <ion-text>
-    <h2>Snapshot</h2>
-  </ion-text>
-</div>
 <ion-tabs>
   <ion-tab-bar slot="bottom">
     <ion-tab-button tab="tab1">
@@ -20,61 +15,12 @@
       <ion-label>Profile</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button (click)="setOpen(true)" expand="block">
+    <ion-tab-button (click)="openModal()" expand="block">
       <ion-icon name="add-circle"></ion-icon>
       <ion-label>Add Weight</ion-label>
     </ion-tab-button>
   </ion-tab-bar>
 </ion-tabs>
-<ion-modal [isOpen]="isModalOpen">
-  <ng-template>
-    <ion-header>
-      <ion-toolbar>
-        <ion-title>Add New Weight Entry</ion-title>
-        <ion-buttons slot="end">
-          <ion-button (click)="setOpen(false)">Close</ion-button>
-        </ion-buttons>
-      </ion-toolbar>
-    </ion-header>
-    <ion-content class="ion-padding">
-      <form
-        [formGroup]="weightEntryForm"
-        (ngSubmit)="onSubmit(weightEntryForm.value)"
-      >
-        <ion-datetime formControlName="weightDate">
-          <span slot="title">Choose the Date You Logged This Weight</span>
-        </ion-datetime>
-        <ion-item>
-          <ion-label>Weight</ion-label>
-          <ion-input
-            type="text"
-            inputmode="numeric"
-            formControlName="weightAmount"
-          ></ion-input>
-        </ion-item>
-        <ion-item>
-          <ion-label>Fat</ion-label>
-          <ion-input
-            type="text"
-            inputmode="numeric"
-            formControlName="fatAmount"
-          ></ion-input>
-        </ion-item>
-        <ion-item>
-          <ion-label>Muscle</ion-label>
-          <ion-input
-            type="text"
-            inputmode="numeric"
-            formControlName="muscleAmount"
-          ></ion-input>
-        </ion-item>
-        <ion-button
-          type="submit"
-          [disabled]="!(weightEntryForm.valid && weightEntryForm.dirty)"
-        >
-          Submit
-        </ion-button>
-      </form>
-    </ion-content>
-  </ng-template>
-</ion-modal>
+<app-weight-entry-modal
+  [userSettings]="userSettings$ | async"
+></app-weight-entry-modal>

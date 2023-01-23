@@ -6,6 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TabsPageRoutingModule } from './tabs-routing.module';
 
 import { TabsPage } from './tabs.page';
+import { WeightEntryModalModule } from '../components/weight-entry-modal/weight-entry-modal.module';
 
 @NgModule({
   imports: [
@@ -14,6 +15,7 @@ import { TabsPage } from './tabs.page';
     FormsModule,
     ReactiveFormsModule,
     TabsPageRoutingModule,
+    WeightEntryModalModule,
   ],
   declarations: [TabsPage],
   providers: [DatePipe],

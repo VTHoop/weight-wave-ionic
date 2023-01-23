@@ -1,0 +1,52 @@
+<ion-modal [isOpen]="isModalOpen">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Add New Weight Entry</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="setOpen(false)">Close</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <form
+        [formGroup]="weightEntryForm"
+        (ngSubmit)="onSubmit(weightEntryForm.value)"
+      >
+        <ion-datetime formControlName="weightDate">
+          <span slot="title">Choose the Date You Logged This Weight</span>
+        </ion-datetime>
+        <ion-item>
+          <ion-label>Weight</ion-label>
+          <ion-input
+            type="text"
+            inputmode="numeric"
+            formControlName="weightAmount"
+          ></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>Fat</ion-label>
+          <ion-input
+            type="text"
+            inputmode="numeric"
+            formControlName="fatAmount"
+          ></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>Muscle</ion-label>
+          <ion-input
+            type="text"
+            inputmode="numeric"
+            formControlName="muscleAmount"
+          ></ion-input>
+        </ion-item>
+        <ion-button
+          type="submit"
+          [disabled]="!(weightEntryForm.valid && weightEntryForm.dirty)"
+        >
+          Submit
+        </ion-button>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>

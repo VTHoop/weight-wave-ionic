@@ -89,11 +89,9 @@ export class WeightLogService {
   addWeightLogEntry(data: WeightLog) {
     if (!data.muscleAmount) {
       delete data.muscleAmount;
-      delete data.muscleUnit;
     }
     if (!data.fatAmount) {
       delete data.fatAmount;
-      delete data.fatUnit;
     }
     return this.afs
       .collection(`${this._firebaseCollection}`)

@@ -4,8 +4,8 @@
 >
   <ng-container *ngIf="weeksToCompare$ | async as weeksToCompare">
     <div class="snapshot__header">
-      <ion-text>
-        <h2>{{ getSalutation() }}, Patrick</h2>
+      <ion-text *ngIf="userSettings$ | async as userSettings">
+        <h2>{{ getSalutation() }}, {{ userSettings.personName }}</h2>
       </ion-text>
       <div class="snapshot__header-filter">
         <h3>Since...</h3>

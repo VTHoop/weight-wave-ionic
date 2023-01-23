@@ -1,16 +1,13 @@
-import {
-  Component,
-  ElementRef,
-  OnChanges,
-  OnInit,
-  SimpleChanges,
-  ViewChild,
-} from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { AverageWeight } from 'src/models/models/weight-log.model';
 import { WeightLogService } from 'src/services/weight-log.service';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { MovingAverageService } from 'src/services/moving-average.service';
 import { AnimationController } from '@ionic/angular';
+import {
+  IonicWeightLogService,
+  Settings,
+} from 'src/services/ionic-weight-log.service';
 
 @Component({
   selector: 'app-week-progress',
@@ -24,12 +21,14 @@ export class WeekProgressComponent implements OnInit {
 
   weekToWeekComparison$: Observable<AverageWeight[]>;
   weeksToCompare$: BehaviorSubject<number> = new BehaviorSubject(2);
+  userSettings$: Observable<Settings>;
   public ProgressPeriod: any = ProgressPeriod;
   selectedProgressPeriod = ProgressPeriod.Week;
 
   constructor(
     public weightLogService: WeightLogService,
     public movingAverageService: MovingAverageService,
+    public ionicWeightLogService: IonicWeightLogService,
     private animationCtrl: AnimationController
   ) {}
 
@@ -46,6 +45,11 @@ export class WeekProgressComponent implements OnInit {
         )
       )
     );
+    this.getSettings();
+  }
+
+  getSettings() {
+    this.userSettings$ = this.ionicWeightLogService.settings$;
   }
 
   changeFilter(progressPeriod: ProgressPeriod) {

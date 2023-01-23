@@ -1,12 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import {
   FormGroup,
   FormBuilder,
   FormControl,
   Validators,
 } from '@angular/forms';
-import { map, Observable, of } from 'rxjs';
-import { WeightUnit } from 'src/models/enums/weight-unit.enum';
+import { WeightLogDisplay } from 'src/app/weight-log-tab/weight-log.page';
 import { WeightLog, WeightLogId } from 'src/models/models/weight-log.model';
 import { WeightLogService } from 'src/services/weight-log.service';
 
@@ -16,35 +15,24 @@ import { WeightLogService } from 'src/services/weight-log.service';
   styleUrls: ['./weight-log.component.scss'],
 })
 export class WeightLogComponent implements OnInit {
-  weightLog$: Observable<WeightLogId[]> = of([]);
   weightEditForm: FormGroup<any> = this.fb.group({});
   weightDate: Date;
-  selectedDoc: WeightLogId;
+  selectedDoc: WeightLogDisplay;
   inEditMode: boolean;
 
   @ViewChild('popover') popover;
+  @Input() weightLogDisplay: WeightLogDisplay[];
 
   constructor(
     private fb: FormBuilder,
     public weightLogService: WeightLogService
   ) {}
 
-  ngOnInit(): void {
-    this.weightLog$ = this.weightLogService.weightLog$.pipe(
-      map((log) =>
-        log.sort(
-          (
-            a,
-            b //@ts-ignore
-          ) => b.weightDate - a.weightDate
-        )
-      )
-    );
-  }
+  ngOnInit(): void {}
 
   isOpen = false;
 
-  presentPopover(e: Event, entry: WeightLogId) {
+  presentPopover(e: Event, entry: WeightLogDisplay) {
     this.popover.event = e;
     this.selectedDoc = entry;
     this.isOpen = true;
@@ -57,46 +45,46 @@ export class WeightLogComponent implements OnInit {
     this.inEditMode = false;
   }
 
-  makeFormViewable(entry: WeightLogId) {
+  makeFormViewable(entry: WeightLogDisplay) {
     this.weightDate = entry.weightDate;
     this.weightEditForm = this.fb.group({
-      weightAmount: new FormControl(
-        { value: entry.weightAmount, disabled: true },
-        [Validators.required, Validators.pattern('^\\d*\\.?\\d+$')]
-      ),
+      weightAmount: new FormControl({ value: entry.weight, disabled: true }, [
+        Validators.required,
+        Validators.pattern('^\\d*\\.?\\d+$'),
+      ]),
       muscleAmount: new FormControl(
         {
-          value: entry.muscleAmount,
+          value: entry.muscle,
           disabled: true,
         },
         Validators.pattern('^\\d*\\.?\\d+$')
       ),
       fatAmount: new FormControl(
-        { value: entry.fatAmount, disabled: true },
+        { value: entry.fat, disabled: true },
         Validators.pattern('^\\d*\\.?\\d+$')
       ),
     });
   }
 
-  makeFormEditable(entry: WeightLogId) {
+  makeFormEditable(entry: WeightLogDisplay) {
     this.inEditMode = true;
     this.weightDate = entry.weightDate;
     this.weightEditForm = this.fb.group({
       id: new FormControl(entry.id),
       weightDate: new FormControl(entry.weightDate),
-      weightAmount: new FormControl(
-        { value: entry.weightAmount, disabled: false },
-        [Validators.required, Validators.pattern('^\\d*\\.?\\d+$')]
-      ),
+      weightAmount: new FormControl({ value: entry.weight, disabled: false }, [
+        Validators.required,
+        Validators.pattern('^\\d*\\.?\\d+$'),
+      ]),
       muscleAmount: new FormControl(
         {
-          value: entry.muscleAmount,
+          value: entry.muscle,
           disabled: false,
         },
         Validators.pattern('^\\d*\\.?\\d+$')
       ),
       fatAmount: new FormControl(
-        { value: entry.fatAmount, disabled: false },
+        { value: entry.fat, disabled: false },
         Validators.pattern('^\\d*\\.?\\d+$')
       ),
     });
@@ -117,9 +105,6 @@ export class WeightLogComponent implements OnInit {
       weightAmount: +value.weightAmount,
       fatAmount: value.fatAmount ? +value.fatAmount : undefined,
       muscleAmount: value.muscleAmount ? +value.muscleAmount : undefined,
-      weightUnit: WeightUnit.LB,
-      muscleUnit: value.muscleAmount ? WeightUnit.LB : undefined,
-      fatUnit: value.fatAmount ? WeightUnit.LB : undefined,
     };
 
     this.weightLogService.updateWeightLogEntry(id, newWeightLog);

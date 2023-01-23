@@ -1,4 +1,4 @@
-<ion-grid class="weight-log" *ngIf="weightLog$ | async as weightLog">
+<ion-grid class="weight-log">
   <ion-row class="weight-log__header">
     <ion-col size="3"></ion-col>
     <ion-col size="3">Weight</ion-col>
@@ -6,7 +6,7 @@
     <ion-col size="3">Muscle</ion-col>
   </ion-row>
   <ion-row
-    *ngFor="let entry of weightLog"
+    *ngFor="let entry of weightLogDisplay"
     (click)="presentPopover($event, entry)"
   >
     <ion-col size="3" class="weight-log__date">
@@ -15,9 +15,9 @@
       </div>
       <div>{{ entry.weightDate | date : "EEE" | uppercase }}</div>
     </ion-col>
-    <ion-col size="3">{{ entry.weightAmount }}</ion-col>
-    <ion-col size="3">{{ entry.fatAmount }}</ion-col>
-    <ion-col size="3">{{ entry.muscleAmount }}</ion-col>
+    <ion-col size="3">{{ entry.weight | number : "1.1-1" }}</ion-col>
+    <ion-col size="3">{{ entry.fat | number : "1.1-1" }}</ion-col>
+    <ion-col size="3">{{ entry.muscle | number : "1.1-1" }}</ion-col>
   </ion-row>
 </ion-grid>
 <ion-popover

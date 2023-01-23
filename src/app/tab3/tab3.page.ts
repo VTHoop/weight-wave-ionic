@@ -1,13 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { Subscription } from 'rxjs';
+import { WeightUnitDisplay } from 'src/models/enums/weight-unit.enum';
 import {
   IonicWeightLogService,
-  WeightLogStorage,
+  Settings,
 } from 'src/services/ionic-weight-log.service';
 
 @Component({
@@ -15,7 +17,8 @@ import {
   templateUrl: 'tab3.page.html',
   styleUrls: ['tab3.page.scss'],
 })
-export class Tab3Page implements OnInit {
+export class Tab3Page implements OnInit, OnDestroy {
+  openSubscriptions: Subscription[] = [];
   profileForm: FormGroup = this.fb.group({});
   name: string = '';
 
@@ -32,15 +35,17 @@ export class Tab3Page implements OnInit {
     this.profileForm = this.fb.group({
       personName: new FormControl('', Validators.required),
       weightMetricDisplay: new FormControl(
-        WeightMetricDisplay.Pounds,
+        WeightUnitDisplay.Pounds,
         Validators.required
       ),
       isLoggingMuscle: new FormControl(false, Validators.required),
       isLoggingFat: new FormControl(false, Validators.required),
     });
-    this.ionicWeightLogService.getSettings().subscribe((settings) => {
-      this.profileForm.patchValue(settings);
-    });
+    this.openSubscriptions.push(
+      this.ionicWeightLogService.settings$.subscribe((settings) => {
+        this.profileForm.patchValue(settings);
+      })
+    );
   }
 
   onSubmit(formValue: Settings) {
@@ -50,18 +55,12 @@ export class Tab3Page implements OnInit {
       isLoggingMuscle: formValue.isLoggingMuscle,
       isLoggingFat: formValue.isLoggingFat,
     } as Settings;
-    this.ionicWeightLogService.set(WeightLogStorage.Settings, settings);
+    this.ionicWeightLogService.saveSettings(settings);
   }
-}
 
-export interface Settings {
-  personName: string;
-  weightMetricDisplay: WeightMetricDisplay;
-  isLoggingMuscle: boolean;
-  isLoggingFat: boolean;
-}
-
-enum WeightMetricDisplay {
-  Pounds = 'pounds',
-  Kilograms = 'kilograms',
+  ngOnDestroy(): void {
+    this.openSubscriptions.forEach((subscription) =>
+      subscription.unsubscribe()
+    );
+  }
 }

@@ -2,10 +2,9 @@ import { IonicModule } from '@ionic/angular';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Tab2Page } from './tab2.page';
-import { ExploreContainerComponentModule } from '../explore-container/explore-container.module';
+import { WeightLogPage } from './weight-log.page';
 
-import { Tab2PageRoutingModule } from './tab2-routing.module';
+import { WeightLogTabPageRoutingModule } from './weight-log-tab-routing.module';
 import { WeightLogModule } from '../components/weight-log/weight-log.module';
 
 @NgModule({
@@ -14,8 +13,8 @@ import { WeightLogModule } from '../components/weight-log/weight-log.module';
     CommonModule,
     FormsModule,
     WeightLogModule,
-    Tab2PageRoutingModule,
+    WeightLogTabPageRoutingModule,
   ],
-  declarations: [Tab2Page],
+  declarations: [WeightLogPage],
 })
-export class Tab2PageModule {}
+export class WeightLogPageModule {}

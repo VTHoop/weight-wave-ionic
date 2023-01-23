@@ -64,7 +64,7 @@ export class MovingAverageService {
       movingAvgAmount
     );
     // if no values have been entered during that period, increase scope until a value is found
-    while (lastNumDays.length === 0) {
+    while (lastNumDays.length === 0 && movingAvgAmount < array.length) {
       movingAvgAmount = movingAvgAmount + 1;
       lastNumDays = this.getItemsForNumPreviousDays(
         array,
