@@ -13,7 +13,6 @@ import {
   weightMetrics,
 } from 'src/services/ionic-weight-log.service';
 import { UnitConversionService } from 'src/services/unit-conversion.service';
-import { WeightLogService } from 'src/services/weight-log.service';
 import { v4 as uuidv4 } from 'uuid';
 
 @Component({
@@ -29,7 +28,6 @@ export class WeightEntryModalComponent implements OnInit {
   constructor(
     private datePipe: DatePipe,
     private fb: FormBuilder,
-    private weightLogService: WeightLogService,
     private ionicWeightLogService: IonicWeightLogService,
     private weightConversionService: UnitConversionService
   ) {}
@@ -86,7 +84,6 @@ export class WeightEntryModalComponent implements OnInit {
           : this.weightConversionService.poundsToKilograms(+value.fatAmount),
     };
     this.ionicWeightLogService.insertWeightLogEntry(newWeightLog);
-    // this.weightLogService.addWeightLogEntry(newWeightLog);
     this.weightEntryForm.reset();
     this.setOpen(false);
   }

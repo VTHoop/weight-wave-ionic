@@ -14,12 +14,13 @@ import {
 } from 'rxjs';
 
 import * as CordovaSQLiteDriver from 'localforage-cordovasqlitedriver';
-import { WeightLogId } from 'src/models/models/weight-log.model';
+import { AverageWeight, WeightLogId } from 'src/models/models/weight-log.model';
 import {
   WeightUnitAbbreviation,
   WeightUnitDisplay,
 } from 'src/models/enums/weight-unit.enum';
 import { seedData } from 'src/models/seed-data';
+import { MovingAverageService } from './moving-average.service';
 
 @Injectable({
   providedIn: 'root',
@@ -28,9 +29,16 @@ export class IonicWeightLogService {
   public storageReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
   private _userSettings$ = new ReplaySubject<Settings>(1);
   private _weightLog$ = new ReplaySubject<WeightLogId[]>(1);
+  private _avgWeightLog$: Observable<AverageWeight[]>;
 
-  constructor(private storage: Storage) {
+  constructor(
+    private storage: Storage,
+    private movingAverageService: MovingAverageService
+  ) {
     this.init();
+    this._avgWeightLog$ = this.weightLog$.pipe(
+      map((log) => movingAverageService.calcMovingAverageForEverything(log, 7))
+    );
   }
 
   async init() {
@@ -48,6 +56,10 @@ export class IonicWeightLogService {
 
   get weightLog$() {
     return this._weightLog$.asObservable();
+  }
+
+  get avgWeightLog$() {
+    return this._avgWeightLog$;
   }
 
   public async insertWeightLogEntry(value: WeightLogId) {
@@ -94,7 +106,14 @@ export class IonicWeightLogService {
             if (!log) {
               this.seedWeightLog();
             }
-            this._weightLog$.next(log);
+            this._weightLog$.next(
+              log.sort(
+                (
+                  a,
+                  b //@ts-ignore
+                ) => a.weightDate - b.weightDate
+              )
+            );
           }
         })
       )

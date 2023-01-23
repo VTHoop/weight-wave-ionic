@@ -46,9 +46,7 @@
               <div class="snapshot__weight">
                 <div class="snapshot__title">Current Avg Weight</div>
                 <div class="snapshot__value">
-                  {{
-                    weekToWeekComparison[0].avgWeightAmount | number : "1.1-2"
-                  }}
+                  {{ weekToWeekComparison[0].avgWeightLbs | number : "1.1-2" }}
                 </div>
               </div>
               <div class="snapshot__placeholder"></div>
@@ -58,8 +56,8 @@
                 </div>
                 <div class="snapshot__value">
                   {{
-                    weekToWeekComparison[0].avgWeightAmount -
-                      weekToWeekComparison[weeksToCompare - 1].avgWeightAmount
+                    weekToWeekComparison[0].avgWeightLbs -
+                      weekToWeekComparison[weeksToCompare - 1].avgWeightLbs
                       | number : "1.1-2"
                   }}
                 </div>
@@ -78,7 +76,7 @@
               <div class="snapshot__weight">
                 <div class="snapshot__subtitle">Current Avg</div>
                 <div class="snapshot__value">
-                  {{ weekToWeekComparison[0].avgFatAmount | number : "1.1-2" }}
+                  {{ weekToWeekComparison[0].avgFatLbs | number : "1.1-2" }}
                 </div>
               </div>
               <div class="snapshot__placeholder"></div>
@@ -86,8 +84,8 @@
                 <div class="snapshot__subtitle">Change</div>
                 <div class="snapshot__value">
                   {{
-                    weekToWeekComparison[0].avgFatAmount -
-                      weekToWeekComparison[weeksToCompare - 1].avgFatAmount
+                    weekToWeekComparison[0].avgFatLbs -
+                      weekToWeekComparison[weeksToCompare - 1].avgFatLbs
                       | number : "1.1-2"
                   }}
                 </div>
@@ -105,9 +103,7 @@
               <div class="snapshot__weight">
                 <div class="snapshot__subtitle">Current Avg</div>
                 <div class="snapshot__value">
-                  {{
-                    weekToWeekComparison[0].avgMuscleAmount | number : "1.1-2"
-                  }}
+                  {{ weekToWeekComparison[0].avgMuscleLbs | number : "1.1-2" }}
                 </div>
               </div>
               <div class="snapshot__placeholder"></div>
@@ -115,8 +111,8 @@
                 <div class="snapshot__subtitle">Change</div>
                 <div class="snapshot__value">
                   {{
-                    weekToWeekComparison[0].avgMuscleAmount -
-                      weekToWeekComparison[weeksToCompare - 1].avgMuscleAmount
+                    weekToWeekComparison[0].avgMuscleLbs -
+                      weekToWeekComparison[weeksToCompare - 1].avgMuscleLbs
                       | number : "1.1-2"
                   }}
                 </div>

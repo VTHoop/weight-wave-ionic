@@ -76,9 +76,9 @@ export class MovingAverageService {
 
     return {
       avgWeightDate: new Date(calcEndDate.getTime()),
-      avgWeightAmount: avgs.weightAvg,
-      avgFatAmount: avgs.fatAvg,
-      avgMuscleAmount: avgs.muscleAvg,
+      avgWeightLbs: avgs.weightLbsAvg,
+      avgFatLbs: avgs.fatLbsAvg,
+      avgMuscleLbs: avgs.muscleLbsAvg,
     };
   };
 
@@ -103,25 +103,25 @@ export class MovingAverageService {
   };
 
   avgAllValuesInArray = (array: WeightLogId[]): WeightAverages => {
-    let weightSum = 0,
-      muscleSum = 0,
-      fatSum = 0;
+    let weightLbsSum = 0,
+      muscleLbsSum = 0,
+      fatLbsSum = 0;
 
     for (let i in array) {
-      weightSum += array[i].weightAmount;
-      muscleSum += array[i].muscleAmount || 0;
-      fatSum += array[i].fatAmount || 0;
+      weightLbsSum += array[i].weightLbs;
+      muscleLbsSum += array[i].muscleLbs || 0;
+      fatLbsSum += array[i].fatLbs || 0;
     }
     return {
-      weightAvg: weightSum / array.length,
-      muscleAvg: muscleSum / array.length,
-      fatAvg: fatSum / array.length,
+      weightLbsAvg: weightLbsSum / array.length,
+      muscleLbsAvg: muscleLbsSum / array.length,
+      fatLbsAvg: fatLbsSum / array.length,
     };
   };
 }
 
 interface WeightAverages {
-  weightAvg: number;
-  fatAvg: number;
-  muscleAvg: number;
+  weightLbsAvg: number;
+  fatLbsAvg: number;
+  muscleLbsAvg: number;
 }

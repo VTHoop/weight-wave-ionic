@@ -1,6 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { AverageWeight } from 'src/models/models/weight-log.model';
-import { WeightLogService } from 'src/services/weight-log.service';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { MovingAverageService } from 'src/services/moving-average.service';
 import { AnimationController } from '@ionic/angular';
@@ -26,7 +25,6 @@ export class WeekProgressComponent implements OnInit {
   selectedProgressPeriod = ProgressPeriod.Week;
 
   constructor(
-    public weightLogService: WeightLogService,
     public movingAverageService: MovingAverageService,
     public ionicWeightLogService: IonicWeightLogService,
     private animationCtrl: AnimationController
@@ -34,7 +32,7 @@ export class WeekProgressComponent implements OnInit {
 
   ngOnInit(): void {
     this.weekToWeekComparison$ = combineLatest([
-      this.weightLogService.weightLog$,
+      this.ionicWeightLogService.weightLog$,
       this.weeksToCompare$,
     ]).pipe(
       map(([log, weeksToCompare]) =>

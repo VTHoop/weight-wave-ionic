@@ -35,7 +35,7 @@ export interface WeightLogResponseId extends WeightLogResponse {
 
 export interface AverageWeight {
   avgWeightDate: Date;
-  avgWeightAmount: number;
-  avgMuscleAmount?: number;
-  avgFatAmount?: number;
+  avgWeightLbs: number;
+  avgMuscleLbs?: number;
+  avgFatLbs?: number;
 }

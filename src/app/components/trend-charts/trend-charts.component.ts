@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Chart } from 'chart.js/auto';
 import { Subscription, map, BehaviorSubject, combineLatest } from 'rxjs';
 import { AverageWeight } from 'src/models/models/weight-log.model';
-import { WeightLogService } from 'src/services/weight-log.service';
+import { IonicWeightLogService } from 'src/services/ionic-weight-log.service';
 
 @Component({
   selector: 'app-trend-charts',
@@ -30,7 +30,7 @@ export class TrendChartsComponent implements OnInit {
   };
 
   constructor(
-    private weightLogService: WeightLogService,
+    private ionicWeightLogService: IonicWeightLogService,
     private dateformat: DatePipe
   ) {}
 
@@ -57,7 +57,10 @@ export class TrendChartsComponent implements OnInit {
 
   createCharts = () => {
     this.openSubscriptions.push(
-      combineLatest([this.weightLogService.avgWeightLog$, this.daysToShow$])
+      combineLatest([
+        this.ionicWeightLogService.avgWeightLog$,
+        this.daysToShow$,
+      ])
         .pipe(
           map(([log, daysToShow]) => {
             this.resetChart('weight-chart');
@@ -86,12 +89,12 @@ export class TrendChartsComponent implements OnInit {
               labels.push(
                 this.dateformat.transform(row.avgWeightDate, 'MMM d')
               );
-              weightValues.push(row.avgWeightAmount);
-              if (row.avgFatAmount) {
-                fatValues.push(row.avgFatAmount);
+              weightValues.push(row.avgWeightLbs);
+              if (row.avgFatLbs) {
+                fatValues.push(row.avgFatLbs);
               }
-              if (row.avgMuscleAmount) {
-                muscleValues.push(row.avgMuscleAmount);
+              if (row.avgMuscleLbs) {
+                muscleValues.push(row.avgMuscleLbs);
               }
             });
             this.createChart(
