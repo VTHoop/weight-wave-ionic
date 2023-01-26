@@ -20,7 +20,10 @@ import {
   WeightUnitDisplay,
 } from 'src/models/enums/weight-unit.enum';
 import { seedData } from 'src/models/seed-data';
-import { MovingAverageService } from './moving-average.service';
+import {
+  MovingAverageData,
+  MovingAverageService,
+} from './moving-average.service';
 
 @Injectable({
   providedIn: 'root',
@@ -29,20 +32,13 @@ export class IonicWeightLogService {
   public storageReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
   private _userSettings$ = new ReplaySubject<Settings>(1);
   private _weightLog$ = new ReplaySubject<WeightLogId[]>(1);
-  private _avgWeightLog$ = new ReplaySubject<AverageWeight[]>(1);
+  private _avgWeightLog$ = new ReplaySubject<MovingAverageData>(1);
 
   constructor(
     private storage: Storage,
     private movingAverageService: MovingAverageService
   ) {
     this.init();
-    // this.weightLog$.pipe(
-    //   map((log) =>
-    //     this._avgWeightLog$.next(
-    //       this.movingAverageService.calcMovingAverageForEverything(log, 7)
-    //     )
-    //   )
-    // );
   }
 
   async init() {

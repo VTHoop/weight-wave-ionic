@@ -1,0 +1,38 @@
+.achievements {
+  &__card {
+    background: linear-gradient(142.24deg, var(--ion-color-secondary) 43.19%, var(--ion-color-secondary-shade) 114.62%);
+        color: var(--ion-color-primary-contrast);
+        font-size: 14px;
+
+        ion-card-title {
+          font-size: 18px;
+          font-weight: 700;
+          color: var(--ion-color-secondary-contrast);
+      }
+
+        ion-card-header {
+            padding: 20px 15px 10px 15px;
+        }
+        ion-card-content {
+            padding: 10px 15px 20px 15px;
+        }
+        &-content {
+          display: flex;
+          align-items: center;
+
+          & > * {
+            flex: 1 1 0%;
+          }
+        }
+        &-date {
+          display: flex;
+          align-items: center;
+          & > * {
+            margin-right: 10px;
+          }
+        }
+        &-value {
+          font-size: 26px;
+        }
+  }
+}

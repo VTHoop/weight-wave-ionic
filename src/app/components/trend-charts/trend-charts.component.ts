@@ -76,13 +76,16 @@ export class TrendChartsComponent implements OnInit {
       ])
         .pipe(
           map(([log, daysToShow, settings]) => {
-            if (log.length) {
+            if (log.allAverages.length) {
               this.resetCharts();
 
               const { labels, weightValues, fatValues, muscleValues } =
-                this.prependNullsWhereScaleIsLargerThanData(daysToShow, log);
+                this.prependNullsWhereScaleIsLargerThanData(
+                  daysToShow,
+                  log.allAverages
+                );
 
-              log.slice(daysToShow * -1).map((row) => {
+              log.allAverages.slice(daysToShow * -1).map((row) => {
                 labels.push(
                   this.dateformat.transform(row.avgWeightDate, 'MMM d')
                 );

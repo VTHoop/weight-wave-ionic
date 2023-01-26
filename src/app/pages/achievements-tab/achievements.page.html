@@ -1,3 +1,28 @@
-<ion-content [fullscreen]="true">
-  placeholders for achievements tab
-</ion-content>
+<<ng-container *ngIf="userSettings$ | async as settings">
+  <ion-content
+    [fullscreen]="true"
+    *ngIf="lowestWeightAverage$| async as lowestWeightAverage"
+    class="achievements"
+  >
+    <ion-card class="achievements__card">
+      <ion-card-header>
+        <ion-card-title>Lowest 7 Day Average Overall Weight</ion-card-title>
+      </ion-card-header>
+      <ion-card-content class="achievements__card-content">
+        <div class="achievements__card-date">
+          <ion-icon name="medal" size="large"></ion-icon>
+          <div>
+            <div>
+              {{lowestWeightAverage.avgWeightDate | date : "MMM d" | uppercase}}
+            </div>
+            <div>{{lowestWeightAverage.avgWeightDate | date : "YYYY"}}</div>
+          </div>
+        </div>
+        <div class="achievements__card-value">
+          {{lowestWeightAverage.avgWeightLbs | number:'0.1-1'}}
+          {{settings.weightMetricDisplay}}
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </ion-content>
+</ng-container>

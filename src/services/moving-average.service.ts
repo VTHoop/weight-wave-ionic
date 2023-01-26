@@ -35,9 +35,15 @@ export class MovingAverageService {
   calcMovingAverageForEverything = (
     array: WeightLogId[],
     movingAvgAmount: number
-  ): AverageWeight[] => {
-    //TODO: Need to handle situation where user skips more days than moving average
-    let weightedAvgs = [];
+  ): MovingAverageData => {
+    let allAverages = [];
+
+    let lowestWeightAverage = this.calcMovingAverage(
+      array,
+      new Date(array[0].weightDate),
+      movingAvgAmount
+    );
+
     for (
       let iDate = new Date(array[0].weightDate);
       iDate < new Date(array[array.length - 1].weightDate);
@@ -48,9 +54,17 @@ export class MovingAverageService {
         iDate,
         movingAvgAmount
       );
-      weightedAvgs.push(weightedWeight);
+
+      if (weightedWeight.avgFatLbs < lowestWeightAverage.avgFatLbs) {
+        lowestWeightAverage = weightedWeight;
+      }
+
+      allAverages.push(weightedWeight);
     }
-    return weightedAvgs;
+    return {
+      lowestWeightAverage,
+      allAverages,
+    };
   };
 
   calcMovingAverage = (
@@ -141,4 +155,9 @@ interface WeightAverages {
   weightKgsAvg: number;
   muscleKgsAvg: number;
   fatKgsAvg: number;
+}
+
+export interface MovingAverageData {
+  lowestWeightAverage: AverageWeight;
+  allAverages: AverageWeight[];
 }
