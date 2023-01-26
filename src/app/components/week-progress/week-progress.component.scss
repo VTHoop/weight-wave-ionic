@@ -49,6 +49,9 @@
         &-picture {
             width:90px;
             margin-bottom: -5px;
+            border-radius: 50%;
+            height: 90px;
+            object-fit: cover;
         }
     }
 

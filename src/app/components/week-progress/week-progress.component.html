@@ -33,7 +33,8 @@
       <div class="snapshot__profile-container">
         <img
           class="snapshot__profile-picture"
-          src="/assets/person-circle-outline.svg"
+          (click)="onPickImage()"
+          [src]="selectedImage"
           alt=""
         />
       </div>

@@ -69,6 +69,16 @@ export class IonicWeightLogService {
     this.loadSettings();
   }
 
+  public async saveProfilePic(profilePicUrl: string) {
+    let storedData = await this.storage.get(WeightLogStorage.Settings);
+    storedData = {
+      ...storedData,
+      profilePicUrl,
+    };
+    await this.storage.set(WeightLogStorage.Settings, storedData);
+    this.loadSettings();
+  }
+
   get weightLog$() {
     return this._weightLog$.asObservable();
   }
@@ -177,6 +187,7 @@ export interface Settings {
   weightMetricDisplay: WeightUnitDisplay;
   isLoggingMuscle: boolean;
   isLoggingFat: boolean;
+  profilePicUrl?: string;
 }
 
 export const weightMetrics = {

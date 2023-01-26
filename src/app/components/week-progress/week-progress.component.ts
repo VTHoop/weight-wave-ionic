@@ -5,9 +5,9 @@ import { MovingAverageService } from 'src/services/moving-average.service';
 import { AnimationController } from '@ionic/angular';
 import {
   IonicWeightLogService,
-  Settings,
   weightMetrics,
 } from 'src/services/ionic-weight-log.service';
+import { Camera, CameraSource, CameraResultType } from '@capacitor/camera';
 
 @Component({
   selector: 'app-week-progress',
@@ -24,6 +24,7 @@ export class WeekProgressComponent implements OnInit {
   public ProgressPeriod: any = ProgressPeriod;
   selectedProgressPeriod = ProgressPeriod.Week;
   progressDisplay$: Observable<ProgressDisplay>;
+  selectedImage: string = '/assets/person-circle-outline.svg';
   isFatLogger: boolean;
   isMuscleLogger: boolean;
 
@@ -42,6 +43,9 @@ export class WeekProgressComponent implements OnInit {
       map(([log, weeksToCompare, settings]) => {
         this.isFatLogger = settings.isLoggingFat;
         this.isMuscleLogger = settings.isLoggingMuscle;
+        this.selectedImage = settings.profilePicUrl
+          ? settings.profilePicUrl
+          : this.selectedImage;
         const changeOverTime = this.movingAverageService.getWeekByWeekAverage(
           log,
           weeksToCompare,
@@ -122,6 +126,17 @@ export class WeekProgressComponent implements OnInit {
       .fromTo('transform', 'translateY(20px)', 'translateY(0px)')
       .fromTo('opacity', '0.2', '1')
       .play();
+  }
+
+  async onPickImage() {
+    const image = await Camera.getPhoto({
+      quality: 50,
+      source: CameraSource.Prompt,
+      correctOrientation: true,
+      resultType: CameraResultType.Uri,
+    });
+    // this.selectedImage = image.webPath;
+    this.ionicWeightLogService.saveProfilePic(image.webPath);
   }
 }
 
