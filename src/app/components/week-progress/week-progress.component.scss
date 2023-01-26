@@ -9,7 +9,10 @@
       font-weight: 700;
       margin-top: 0;
     }
-
+    &__units {
+      margin-left: 4px;
+      font-size: 12px;
+    }
     &__filter{
       padding: 10px 20px;
       display: flex;
@@ -147,3 +150,4 @@
   border-bottom: solid var(--ion-color-secondary) 4px;
   padding-bottom: 4px;
 }
+

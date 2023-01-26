@@ -9,18 +9,29 @@
       <ion-icon name="list-circle-outline"></ion-icon>
       <ion-label>Log</ion-label>
     </ion-tab-button>
+    <div class="fab-placeholder"></div>
 
-    <ion-tab-button tab="tab3">
-      <ion-icon name="person-circle-outline"></ion-icon>
-      <ion-label>Profile</ion-label>
+    <ion-tab-button tab="achievements-tab">
+      <ion-icon name="trophy"></ion-icon>
+      <ion-label>Achievements</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button (click)="openModal()" expand="block">
-      <ion-icon name="add-circle"></ion-icon>
-      <ion-label>Add Weight</ion-label>
+    <ion-tab-button tab="settings-tab">
+      <ion-icon name="person-circle-outline"></ion-icon>
+      <ion-label>Settings</ion-label>
     </ion-tab-button>
   </ion-tab-bar>
 </ion-tabs>
+<ion-fab
+  slot="fixed"
+  vertical="bottom"
+  horizontal="center"
+  (click)="openModal()"
+>
+  <ion-fab-button color="secondary" size="large">
+    <ion-icon name="add"></ion-icon>
+  </ion-fab-button>
+</ion-fab>
 <app-weight-entry-modal
   [userSettings]="userSettings$ | async"
 ></app-weight-entry-modal>

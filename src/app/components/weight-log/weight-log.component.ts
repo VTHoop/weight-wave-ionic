@@ -5,7 +5,7 @@ import {
   FormControl,
   Validators,
 } from '@angular/forms';
-import { WeightLogDisplay } from 'src/app/weight-log-tab/weight-log.page';
+import { WeightLogDisplay } from 'src/app/pages/weight-log-tab/weight-log.page';
 import { WeightLogId } from 'src/models/models/weight-log.model';
 import {
   IonicWeightLogService,

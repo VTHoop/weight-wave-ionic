@@ -5,6 +5,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { WeightUnitDisplay } from 'src/models/enums/weight-unit.enum';
 import {
@@ -13,18 +14,19 @@ import {
 } from 'src/services/ionic-weight-log.service';
 
 @Component({
-  selector: 'app-tab3',
-  templateUrl: 'tab3.page.html',
-  styleUrls: ['tab3.page.scss'],
+  selector: 'app-settings-tab',
+  templateUrl: 'settings.page.html',
+  styleUrls: ['settings.page.scss'],
 })
-export class Tab3Page implements OnInit, OnDestroy {
+export class SettingsPage implements OnInit, OnDestroy {
   openSubscriptions: Subscription[] = [];
   profileForm: FormGroup = this.fb.group({});
   name: string = '';
 
   constructor(
     private fb: FormBuilder,
-    private ionicWeightLogService: IonicWeightLogService
+    private ionicWeightLogService: IonicWeightLogService,
+    private toastController: ToastController
   ) {}
 
   ngOnInit() {
@@ -48,14 +50,22 @@ export class Tab3Page implements OnInit, OnDestroy {
     );
   }
 
-  onSubmit(formValue: Settings) {
+  async onSubmit(formValue: Settings) {
     const settings = {
       personName: formValue.personName,
       weightMetricDisplay: formValue.weightMetricDisplay,
       isLoggingMuscle: formValue.isLoggingMuscle,
       isLoggingFat: formValue.isLoggingFat,
     } as Settings;
-    this.ionicWeightLogService.saveSettings(settings);
+    await this.ionicWeightLogService.saveSettings(settings);
+    const toast = await this.toastController.create({
+      message: 'Settings Updated',
+      duration: 1500,
+      cssClass: 'success-toast',
+      position: 'bottom',
+    });
+
+    await toast.present();
   }
 
   ngOnDestroy(): void {

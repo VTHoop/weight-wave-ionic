@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { WeightLogPage } from './weight-log.page';
 
 import { WeightLogTabPageRoutingModule } from './weight-log-tab-routing.module';
-import { WeightLogModule } from '../components/weight-log/weight-log.module';
+import { WeightLogModule } from '../../components/weight-log/weight-log.module';
 
 @NgModule({
   imports: [

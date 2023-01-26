@@ -10,21 +10,30 @@ const routes: Routes = [
       {
         path: 'tab1',
         loadChildren: () =>
-          import('../dashboard-tab/dashboard-tab.module').then(
+          import('../pages/dashboard-tab/dashboard-tab.module').then(
             (m) => m.DashboardPageModule
           ),
       },
       {
         path: 'tab2',
         loadChildren: () =>
-          import('../weight-log-tab/weight-log-tab.module').then(
+          import('../pages/weight-log-tab/weight-log-tab.module').then(
             (m) => m.WeightLogPageModule
           ),
       },
       {
-        path: 'tab3',
+        path: 'achievements-tab',
         loadChildren: () =>
-          import('../tab3/tab3.module').then((m) => m.Tab3PageModule),
+          import('../pages/achievements-tab/achievements-tab.module').then(
+            (m) => m.AchievementsPageModule
+          ),
+      },
+      {
+        path: 'settings-tab',
+        loadChildren: () =>
+          import('../pages/settings-tab/settings-page.module').then(
+            (m) => m.SettingsPageModule
+          ),
       },
       {
         path: '',

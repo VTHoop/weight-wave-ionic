@@ -45,7 +45,10 @@
             <div class="snapshot__weight">
               <div class="snapshot__title">Current Avg Weight</div>
               <div class="snapshot__value">
-                {{ progressDisplay.weight | number : "1.1-2" }}
+                <span>{{ progressDisplay.weight | number : "1.1-2" }}</span>
+                <span class="snapshot__units">{{
+                  progressDisplay.unitAbbrev
+                }}</span>
               </div>
             </div>
             <div class="snapshot__placeholder"></div>
@@ -55,6 +58,9 @@
               </div>
               <div class="snapshot__value">
                 {{ progressDisplay.weightChange | number : "1.1-2" }}
+                <span class="snapshot__units">{{
+                  progressDisplay.unitAbbrev
+                }}</span>
               </div>
             </div>
           </ion-card-content>
@@ -72,6 +78,9 @@
               <div class="snapshot__subtitle">Current Avg</div>
               <div class="snapshot__value">
                 {{ progressDisplay.fat | number : "1.1-2" }}
+                <span class="snapshot__units">{{
+                  progressDisplay.unitAbbrev
+                }}</span>
               </div>
             </div>
             <div class="snapshot__placeholder"></div>
@@ -79,6 +88,9 @@
               <div class="snapshot__subtitle">Change</div>
               <div class="snapshot__value">
                 {{ progressDisplay.fatChange | number : "1.1-2" }}
+                <span class="snapshot__units">{{
+                  progressDisplay.unitAbbrev
+                }}</span>
               </div>
             </div>
           </ion-card-content>
@@ -95,6 +107,9 @@
               <div class="snapshot__subtitle">Current Avg</div>
               <div class="snapshot__value">
                 {{ progressDisplay.muscle | number : "1.1-2" }}
+                <span class="snapshot__units">{{
+                  progressDisplay.unitAbbrev
+                }}</span>
               </div>
             </div>
             <div class="snapshot__placeholder"></div>
@@ -102,6 +117,9 @@
               <div class="snapshot__subtitle">Change</div>
               <div class="snapshot__value">
                 {{ progressDisplay.muscleChange | number : "1.1-2" }}
+                <span class="snapshot__units">{{
+                  progressDisplay.unitAbbrev
+                }}</span>
               </div>
             </div>
           </ion-card-content>

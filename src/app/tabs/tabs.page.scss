@@ -21,12 +21,7 @@ ion-tab-button {
   }
 }
 
-ion-tab-button:nth-last-of-type(1) {
-  --background: var(--ion-color-secondary);
-  --color: var(--ion-color-primary-contrast);
-
-  ion-icon {
-    fill:white;
-  }
+.fab-placeholder {
+  flex: 0 0 15%;
 }
 

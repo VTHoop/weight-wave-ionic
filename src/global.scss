@@ -42,3 +42,8 @@ h2 {
 .container {
     padding: 10px;
 }
+
+.success-toast {
+  --background: var(--ion-color-secondary);
+  margin-top: -60px;
+}
