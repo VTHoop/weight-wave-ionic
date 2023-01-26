@@ -1,128 +1,114 @@
 <div
   class="snapshot container"
-  *ngIf="weekToWeekComparison$ | async as weekToWeekComparison"
+  *ngIf="progressDisplay$ | async as progressDisplay"
 >
-  <ng-container *ngIf="weeksToCompare$ | async as weeksToCompare">
-    <div class="snapshot__header">
-      <ion-text *ngIf="userSettings$ | async as userSettings">
-        <h2>{{ getSalutation() }}, {{ userSettings.personName }}</h2>
-      </ion-text>
-      <div class="snapshot__header-filter">
-        <h3>Since...</h3>
-        <div class="snapshot__filter">
-          <div
-            (click)="changeFilter(ProgressPeriod.Week)"
-            [ngClass]="{
-              selected: selectedProgressPeriod === ProgressPeriod.Week
-            }"
-          >
-            Last Week
-          </div>
-          <div
-            (click)="changeFilter(ProgressPeriod.Month)"
-            [ngClass]="{
-              selected: selectedProgressPeriod === ProgressPeriod.Month
-            }"
-          >
-            Last Month
-          </div>
+  <div class="snapshot__header">
+    <ion-text>
+      <h2>{{ getSalutation() }}, {{ progressDisplay.name }}</h2>
+    </ion-text>
+    <div class="snapshot__header-filter">
+      <h3>Since...</h3>
+      <div class="snapshot__filter">
+        <div
+          (click)="changeFilter(ProgressPeriod.Week)"
+          [ngClass]="{
+            selected: selectedProgressPeriod === ProgressPeriod.Week
+          }"
+        >
+          Last Week
+        </div>
+        <div
+          (click)="changeFilter(ProgressPeriod.Month)"
+          [ngClass]="{
+            selected: selectedProgressPeriod === ProgressPeriod.Month
+          }"
+        >
+          Last Month
         </div>
       </div>
     </div>
-    <ion-grid>
-      <ion-row class="snapshot__profile">
-        <div class="snapshot__profile-container">
-          <img
-            class="snapshot__profile-picture"
-            src="/assets/person-circle-outline.svg"
-            alt=""
-          />
-        </div>
-      </ion-row>
-      <ion-row class="snapshot__row--overall">
-        <ion-col>
-          <ion-card class="snapshot--overall">
-            <ion-card-content class="snapshot__content">
-              <div class="snapshot__weight">
-                <div class="snapshot__title">Current Avg Weight</div>
-                <div class="snapshot__value">
-                  {{ weekToWeekComparison[0].avgWeightLbs | number : "1.1-2" }}
-                </div>
+  </div>
+  <ion-grid>
+    <ion-row class="snapshot__profile">
+      <div class="snapshot__profile-container">
+        <img
+          class="snapshot__profile-picture"
+          src="/assets/person-circle-outline.svg"
+          alt=""
+        />
+      </div>
+    </ion-row>
+    <ion-row class="snapshot__row--overall">
+      <ion-col>
+        <ion-card class="snapshot--overall">
+          <ion-card-content class="snapshot__content">
+            <div class="snapshot__weight">
+              <div class="snapshot__title">Current Avg Weight</div>
+              <div class="snapshot__value">
+                {{ progressDisplay.weight | number : "1.1-2" }}
               </div>
-              <div class="snapshot__placeholder"></div>
-              <div class="snapshot__compare" #snapshotWeight>
-                <div class="snapshot__title">
-                  Since Last {{ selectedProgressPeriod }}
-                </div>
-                <div class="snapshot__value">
-                  {{
-                    weekToWeekComparison[0].avgWeightLbs -
-                      weekToWeekComparison[weeksToCompare - 1].avgWeightLbs
-                      | number : "1.1-2"
-                  }}
-                </div>
+            </div>
+            <div class="snapshot__placeholder"></div>
+            <div class="snapshot__compare" #snapshotWeight>
+              <div class="snapshot__title">
+                Since Last {{ selectedProgressPeriod }}
               </div>
-            </ion-card-content>
-          </ion-card>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col>
-          <ion-card class="snapshot__fat">
-            <ion-card-header>
-              <ion-card-title>Fat</ion-card-title>
-            </ion-card-header>
-            <ion-card-content class="snapshot__content">
-              <div class="snapshot__weight">
-                <div class="snapshot__subtitle">Current Avg</div>
-                <div class="snapshot__value">
-                  {{ weekToWeekComparison[0].avgFatLbs | number : "1.1-2" }}
-                </div>
+              <div class="snapshot__value">
+                {{ progressDisplay.weightChange | number : "1.1-2" }}
               </div>
-              <div class="snapshot__placeholder"></div>
-              <div class="snapshot__compare" #snapshotFat>
-                <div class="snapshot__subtitle">Change</div>
-                <div class="snapshot__value">
-                  {{
-                    weekToWeekComparison[0].avgFatLbs -
-                      weekToWeekComparison[weeksToCompare - 1].avgFatLbs
-                      | number : "1.1-2"
-                  }}
-                </div>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-card class="snapshot__fat">
+          <ion-card-header>
+            <ion-card-title>Fat</ion-card-title>
+          </ion-card-header>
+          <ion-card-content class="snapshot__content">
+            <div class="snapshot__weight">
+              <div class="snapshot__subtitle">Current Avg</div>
+              <div class="snapshot__value">
+                {{ progressDisplay.fat | number : "1.1-2" }}
               </div>
-            </ion-card-content>
-          </ion-card>
-        </ion-col>
-        <ion-col>
-          <ion-card class="snapshot__muscle">
-            <ion-card-header>
-              <ion-card-title>Muscle</ion-card-title>
-            </ion-card-header>
+            </div>
+            <div class="snapshot__placeholder"></div>
+            <div class="snapshot__compare" #snapshotFat>
+              <div class="snapshot__subtitle">Change</div>
+              <div class="snapshot__value">
+                {{ progressDisplay.fatChange | number : "1.1-2" }}
+              </div>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      <ion-col>
+        <ion-card class="snapshot__muscle">
+          <ion-card-header>
+            <ion-card-title>Muscle</ion-card-title>
+          </ion-card-header>
 
-            <ion-card-content class="snapshot__content">
-              <div class="snapshot__weight">
-                <div class="snapshot__subtitle">Current Avg</div>
-                <div class="snapshot__value">
-                  {{ weekToWeekComparison[0].avgMuscleLbs | number : "1.1-2" }}
-                </div>
+          <ion-card-content class="snapshot__content">
+            <div class="snapshot__weight">
+              <div class="snapshot__subtitle">Current Avg</div>
+              <div class="snapshot__value">
+                {{ progressDisplay.muscle | number : "1.1-2" }}
               </div>
-              <div class="snapshot__placeholder"></div>
-              <div class="snapshot__compare" #snapshotMuscle>
-                <div class="snapshot__subtitle">Change</div>
-                <div class="snapshot__value">
-                  {{
-                    weekToWeekComparison[0].avgMuscleLbs -
-                      weekToWeekComparison[weeksToCompare - 1].avgMuscleLbs
-                      | number : "1.1-2"
-                  }}
-                </div>
+            </div>
+            <div class="snapshot__placeholder"></div>
+            <div class="snapshot__compare" #snapshotMuscle>
+              <div class="snapshot__subtitle">Change</div>
+              <div class="snapshot__value">
+                {{ progressDisplay.muscleChange | number : "1.1-2" }}
               </div>
-            </ion-card-content>
-          </ion-card>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </ng-container>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </div>
 <ng-template #loading>
   <ion-spinner name="circular"></ion-spinner>

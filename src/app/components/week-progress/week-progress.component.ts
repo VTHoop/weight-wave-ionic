@@ -6,6 +6,7 @@ import { AnimationController } from '@ionic/angular';
 import {
   IonicWeightLogService,
   Settings,
+  weightMetrics,
 } from 'src/services/ionic-weight-log.service';
 
 @Component({
@@ -20,9 +21,9 @@ export class WeekProgressComponent implements OnInit {
 
   weekToWeekComparison$: Observable<AverageWeight[]>;
   weeksToCompare$: BehaviorSubject<number> = new BehaviorSubject(2);
-  userSettings$: Observable<Settings>;
   public ProgressPeriod: any = ProgressPeriod;
   selectedProgressPeriod = ProgressPeriod.Week;
+  progressDisplay$: Observable<ProgressDisplay>;
 
   constructor(
     public movingAverageService: MovingAverageService,
@@ -31,23 +32,54 @@ export class WeekProgressComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.weekToWeekComparison$ = combineLatest([
+    this.progressDisplay$ = combineLatest([
       this.ionicWeightLogService.weightLog$,
       this.weeksToCompare$,
+      this.ionicWeightLogService.settings$,
     ]).pipe(
-      map(([log, weeksToCompare]) =>
-        this.movingAverageService.getWeekByWeekAverage(
+      map(([log, weeksToCompare, settings]) => {
+        const changeOverTime = this.movingAverageService.getWeekByWeekAverage(
           log,
           weeksToCompare,
           new Date()
-        )
-      )
+        );
+        const progressDisplay: ProgressDisplay =
+          settings.weightMetricDisplay === weightMetrics.pounds.name
+            ? {
+                weight: changeOverTime[0].avgWeightLbs,
+                weightChange:
+                  changeOverTime[0].avgWeightLbs -
+                  changeOverTime[weeksToCompare - 1].avgWeightLbs,
+                fat: changeOverTime[0].avgFatLbs,
+                fatChange:
+                  changeOverTime[0].avgFatLbs -
+                  changeOverTime[weeksToCompare - 1].avgFatLbs,
+                muscle: changeOverTime[0].avgMuscleLbs,
+                muscleChange:
+                  changeOverTime[0].avgMuscleLbs -
+                  changeOverTime[weeksToCompare - 1].avgMuscleLbs,
+                unitAbbrev: weightMetrics.pounds.abbreviation,
+                name: settings.personName,
+              }
+            : {
+                weight: changeOverTime[0].avgWeightKgs,
+                weightChange:
+                  changeOverTime[0].avgWeightKgs -
+                  changeOverTime[weeksToCompare - 1].avgWeightKgs,
+                fat: changeOverTime[0].avgFatKgs,
+                fatChange:
+                  changeOverTime[0].avgFatKgs -
+                  changeOverTime[weeksToCompare - 1].avgFatKgs,
+                muscle: changeOverTime[0].avgMuscleKgs,
+                muscleChange:
+                  changeOverTime[0].avgMuscleKgs -
+                  changeOverTime[weeksToCompare - 1].avgMuscleKgs,
+                unitAbbrev: weightMetrics.kilograms.abbreviation,
+                name: settings.personName,
+              };
+        return progressDisplay;
+      })
     );
-    this.getSettings();
-  }
-
-  getSettings() {
-    this.userSettings$ = this.ionicWeightLogService.settings$;
   }
 
   changeFilter(progressPeriod: ProgressPeriod) {
@@ -92,4 +124,15 @@ export class WeekProgressComponent implements OnInit {
 enum ProgressPeriod {
   Week = 'Week',
   Month = 'Month',
+}
+
+interface ProgressDisplay {
+  weight: number;
+  weightChange: number;
+  fat?: number;
+  fatChange?: number;
+  muscle?: number;
+  muscleChange?: number;
+  unitAbbrev: string;
+  name: string;
 }

@@ -3,7 +3,10 @@ import { Component, OnInit } from '@angular/core';
 import { Chart } from 'chart.js/auto';
 import { Subscription, map, BehaviorSubject, combineLatest } from 'rxjs';
 import { AverageWeight } from 'src/models/models/weight-log.model';
-import { IonicWeightLogService } from 'src/services/ionic-weight-log.service';
+import {
+  IonicWeightLogService,
+  weightMetrics,
+} from 'src/services/ionic-weight-log.service';
 
 @Component({
   selector: 'app-trend-charts',
@@ -60,67 +63,82 @@ export class TrendChartsComponent implements OnInit {
       combineLatest([
         this.ionicWeightLogService.avgWeightLog$,
         this.daysToShow$,
+        this.ionicWeightLogService.settings$,
       ])
         .pipe(
-          map(([log, daysToShow]) => {
-            this.resetChart('weight-chart');
-            this.resetChart('fat-chart');
-            this.resetChart('muscle-chart');
-            const labels: (string | null)[] = [];
-            const weightValues: (number | null)[] = [];
-            const fatValues: (number | null)[] = [];
-            const muscleValues: (number | null)[] = [];
+          map(([log, daysToShow, settings]) => {
+            if (log.length) {
+              this.resetChart('weight-chart');
+              this.resetChart('fat-chart');
+              this.resetChart('muscle-chart');
+              const labels: (string | null)[] = [];
+              const weightValues: (number | null)[] = [];
+              const fatValues: (number | null)[] = [];
+              const muscleValues: (number | null)[] = [];
 
-            for (let i = daysToShow; i >= log.length; i--) {
-              labels.push(
-                this.dateformat.transform(
-                  new Date(
-                    log[0].avgWeightDate.getFullYear(),
-                    log[0].avgWeightDate.getMonth(),
-                    log[0].avgWeightDate.getDate() - i
+              for (let i = daysToShow; i >= log.length; i--) {
+                labels.push(
+                  this.dateformat.transform(
+                    new Date(
+                      log[0].avgWeightDate.getFullYear(),
+                      log[0].avgWeightDate.getMonth(),
+                      log[0].avgWeightDate.getDate() - i
+                    )
                   )
-                )
+                );
+                weightValues.push(null);
+                fatValues.push(null);
+                muscleValues.push(null);
+              }
+              log.slice(daysToShow * -1).map((row) => {
+                labels.push(
+                  this.dateformat.transform(row.avgWeightDate, 'MMM d')
+                );
+                if (
+                  settings.weightMetricDisplay === weightMetrics.pounds.name
+                ) {
+                  weightValues.push(row.avgWeightLbs);
+                  if (row.avgFatLbs) {
+                    fatValues.push(row.avgFatLbs);
+                  }
+                  if (row.avgMuscleLbs) {
+                    muscleValues.push(row.avgMuscleLbs);
+                  }
+                } else {
+                  weightValues.push(row.avgWeightKgs);
+                  if (row.avgFatKgs) {
+                    fatValues.push(row.avgFatKgs);
+                  }
+                  if (row.avgMuscleKgs) {
+                    muscleValues.push(row.avgMuscleKgs);
+                  }
+                }
+              });
+              this.createChart(
+                'weight-chart',
+                labels,
+                weightValues,
+                'rgb(75, 192, 192)',
+                'Overall Weight',
+                '#3d535c'
               );
-              weightValues.push(null);
-              fatValues.push(null);
-              muscleValues.push(null);
+              this.createChart(
+                'fat-chart',
+                labels,
+                fatValues,
+                'rgb(192, 75, 192)',
+                'Fat',
+                '#9fb992'
+              );
+              this.createChart(
+                'muscle-chart',
+                labels,
+                muscleValues,
+                'rgb(192, 192, 75)',
+                'Muscle',
+                '#6d8dab'
+              );
             }
-            log.slice(daysToShow * -1).map((row) => {
-              labels.push(
-                this.dateformat.transform(row.avgWeightDate, 'MMM d')
-              );
-              weightValues.push(row.avgWeightLbs);
-              if (row.avgFatLbs) {
-                fatValues.push(row.avgFatLbs);
-              }
-              if (row.avgMuscleLbs) {
-                muscleValues.push(row.avgMuscleLbs);
-              }
-            });
-            this.createChart(
-              'weight-chart',
-              labels,
-              weightValues,
-              'rgb(75, 192, 192)',
-              'Overall Weight',
-              '#3d535c'
-            );
-            this.createChart(
-              'fat-chart',
-              labels,
-              fatValues,
-              'rgb(192, 75, 192)',
-              'Fat',
-              '#9fb992'
-            );
-            this.createChart(
-              'muscle-chart',
-              labels,
-              muscleValues,
-              'rgb(192, 192, 75)',
-              'Muscle',
-              '#6d8dab'
-            );
           })
         )
         .subscribe()

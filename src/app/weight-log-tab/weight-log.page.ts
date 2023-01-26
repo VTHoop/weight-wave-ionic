@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { combineLatest, map, Observable } from 'rxjs';
 import {
   IonicWeightLogService,
+  Settings,
   weightMetrics,
 } from 'src/services/ionic-weight-log.service';
 
@@ -12,10 +13,13 @@ import {
 })
 export class WeightLogPage implements OnInit {
   weightLogDisplay$: Observable<WeightLogDisplay[]>;
+  settings$: Observable<Settings>;
 
   constructor(private ionicWeightLogService: IonicWeightLogService) {}
 
   ngOnInit(): void {
+    this.settings$ = this.ionicWeightLogService.settings$;
+
     this.weightLogDisplay$ = combineLatest([
       this.ionicWeightLogService.settings$,
       this.ionicWeightLogService.weightLog$,
@@ -45,7 +49,7 @@ export class WeightLogPage implements OnInit {
             (
               a,
               b //@ts-ignore
-            ) => b.weightDate - a.weightDate
+            ) => new Date(b.weightDate) - new Date(a.weightDate)
           )
       )
     );

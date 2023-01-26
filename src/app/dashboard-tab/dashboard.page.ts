@@ -7,12 +7,8 @@ import { WeightLogDisplay } from '../weight-log-tab/weight-log.page';
   templateUrl: 'dashboard.page.html',
   styleUrls: ['dashboard.page.scss'],
 })
-export class DashboardPage implements OnInit {
+export class DashboardPage {
   // weightLogDisplay$: Observable<WeightLogDisplay[]>;
 
-  constructor(private ionicWeightLogService: IonicWeightLogService) {}
-
-  ngOnInit(): void {
-    // throw new Error('Method not implemented.');
-  }
+  constructor() {}
 }

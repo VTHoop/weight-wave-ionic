@@ -7,12 +7,10 @@ export interface WeightLog {
   weightAmount?: number;
   muscleAmount?: number;
   fatAmount?: number;
-  // TODO: Make non-optional
-  weightLbs?: number;
+  weightLbs: number;
   muscleLbs?: number;
   fatLbs?: number;
-  // TODO: Make non-optional
-  weightKgs?: number;
+  weightKgs: number;
   muscleKgs?: number;
   fatKgs?: number;
 }
@@ -38,4 +36,7 @@ export interface AverageWeight {
   avgWeightLbs: number;
   avgMuscleLbs?: number;
   avgFatLbs?: number;
+  avgWeightKgs: number;
+  avgMuscleKgs?: number;
+  avgFatKgs?: number;
 }

@@ -29,16 +29,20 @@ export class IonicWeightLogService {
   public storageReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
   private _userSettings$ = new ReplaySubject<Settings>(1);
   private _weightLog$ = new ReplaySubject<WeightLogId[]>(1);
-  private _avgWeightLog$: Observable<AverageWeight[]>;
+  private _avgWeightLog$ = new ReplaySubject<AverageWeight[]>(1);
 
   constructor(
     private storage: Storage,
     private movingAverageService: MovingAverageService
   ) {
     this.init();
-    this._avgWeightLog$ = this.weightLog$.pipe(
-      map((log) => movingAverageService.calcMovingAverageForEverything(log, 7))
-    );
+    // this.weightLog$.pipe(
+    //   map((log) =>
+    //     this._avgWeightLog$.next(
+    //       this.movingAverageService.calcMovingAverageForEverything(log, 7)
+    //     )
+    //   )
+    // );
   }
 
   async init() {
@@ -47,6 +51,21 @@ export class IonicWeightLogService {
     this.storageReady.next(true);
     this.loadSettings();
     this.loadWeightLog();
+    this.loadAverageWeightLog();
+  }
+
+  loadAverageWeightLog() {
+    combineLatest([this.storageReady, this.weightLog$])
+      .pipe(
+        map(([dbReady, log]) => {
+          if (dbReady) {
+            this._avgWeightLog$.next(
+              this.movingAverageService.calcMovingAverageForEverything(log, 7)
+            );
+          }
+        })
+      )
+      .subscribe();
   }
 
   public async saveSettings(value: any) {
@@ -59,7 +78,7 @@ export class IonicWeightLogService {
   }
 
   get avgWeightLog$() {
-    return this._avgWeightLog$;
+    return this._avgWeightLog$.asObservable();
   }
 
   public async insertWeightLogEntry(value: WeightLogId) {
@@ -68,6 +87,28 @@ export class IonicWeightLogService {
     storedData.push(value);
     await this.storage.set(WeightLogStorage.WeightLog, storedData);
     this.loadWeightLog();
+  }
+
+  public async updateWeightLogEntry(value: WeightLogId) {
+    const storedData: WeightLogId[] =
+      (await this.storage.get(WeightLogStorage.WeightLog)) || [];
+    const entryIndex = storedData.findIndex((entry) => entry.id === value.id);
+    if (entryIndex !== -1) {
+      storedData[entryIndex] = value;
+      await this.storage.set(WeightLogStorage.WeightLog, storedData);
+      this.loadWeightLog();
+    }
+  }
+
+  public async deleteWeightLogEntry(id: string) {
+    const storedData: WeightLogId[] =
+      (await this.storage.get(WeightLogStorage.WeightLog)) || [];
+    const entryIndex = storedData.findIndex((entry) => entry.id === id);
+    if (entryIndex !== -1) {
+      storedData.splice(entryIndex, 1);
+      await this.storage.set(WeightLogStorage.WeightLog, storedData);
+      this.loadWeightLog();
+    }
   }
 
   get settings$() {
@@ -104,16 +145,18 @@ export class IonicWeightLogService {
         map(([dbReady, log]) => {
           if (dbReady) {
             if (!log) {
+              // TODO: Remove this before Production
               this.seedWeightLog();
+            } else {
+              this._weightLog$.next(
+                log.sort(
+                  (
+                    a,
+                    b //@ts-ignore
+                  ) => new Date(a.weightDate) - new Date(b.weightDate)
+                )
+              );
             }
-            this._weightLog$.next(
-              log.sort(
-                (
-                  a,
-                  b //@ts-ignore
-                ) => a.weightDate - b.weightDate
-              )
-            );
           }
         })
       )

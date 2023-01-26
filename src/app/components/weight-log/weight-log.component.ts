@@ -6,8 +6,13 @@ import {
   Validators,
 } from '@angular/forms';
 import { WeightLogDisplay } from 'src/app/weight-log-tab/weight-log.page';
-import { WeightLog, WeightLogId } from 'src/models/models/weight-log.model';
-import { WeightLogService } from 'src/services/weight-log.service';
+import { WeightLogId } from 'src/models/models/weight-log.model';
+import {
+  IonicWeightLogService,
+  Settings,
+  weightMetrics,
+} from 'src/services/ionic-weight-log.service';
+import { UnitConversionService } from 'src/services/unit-conversion.service';
 
 @Component({
   selector: 'app-weight-log',
@@ -22,10 +27,12 @@ export class WeightLogComponent implements OnInit {
 
   @ViewChild('popover') popover;
   @Input() weightLogDisplay: WeightLogDisplay[];
+  @Input() userSettings: Settings;
 
   constructor(
     private fb: FormBuilder,
-    public weightLogService: WeightLogService
+    private ionicWeightLogService: IonicWeightLogService,
+    private weightConversionService: UnitConversionService
   ) {}
 
   ngOnInit(): void {}
@@ -48,18 +55,18 @@ export class WeightLogComponent implements OnInit {
   makeFormViewable(entry: WeightLogDisplay) {
     this.weightDate = entry.weightDate;
     this.weightEditForm = this.fb.group({
-      weightAmount: new FormControl({ value: entry.weight, disabled: true }, [
+      weight: new FormControl({ value: entry.weight, disabled: true }, [
         Validators.required,
         Validators.pattern('^\\d*\\.?\\d+$'),
       ]),
-      muscleAmount: new FormControl(
+      muscle: new FormControl(
         {
           value: entry.muscle,
           disabled: true,
         },
         Validators.pattern('^\\d*\\.?\\d+$')
       ),
-      fatAmount: new FormControl(
+      fat: new FormControl(
         { value: entry.fat, disabled: true },
         Validators.pattern('^\\d*\\.?\\d+$')
       ),
@@ -72,18 +79,18 @@ export class WeightLogComponent implements OnInit {
     this.weightEditForm = this.fb.group({
       id: new FormControl(entry.id),
       weightDate: new FormControl(entry.weightDate),
-      weightAmount: new FormControl({ value: entry.weight, disabled: false }, [
+      weight: new FormControl({ value: entry.weight, disabled: false }, [
         Validators.required,
         Validators.pattern('^\\d*\\.?\\d+$'),
       ]),
-      muscleAmount: new FormControl(
+      muscle: new FormControl(
         {
           value: entry.muscle,
           disabled: false,
         },
         Validators.pattern('^\\d*\\.?\\d+$')
       ),
-      fatAmount: new FormControl(
+      fat: new FormControl(
         { value: entry.fat, disabled: false },
         Validators.pattern('^\\d*\\.?\\d+$')
       ),
@@ -95,25 +102,44 @@ export class WeightLogComponent implements OnInit {
     this.inEditMode = false;
   }
 
-  onSubmit(value: WeightLogId) {
-    const id = value.id;
-    delete value.id;
-    const newWeightLog: WeightLog = {
+  onSubmit(value: WeightLogDisplay) {
+    const newWeightLog: WeightLogId = {
       ...value,
       creationDate: new Date(),
       weightDate: new Date(value.weightDate),
-      weightAmount: +value.weightAmount,
-      fatAmount: value.fatAmount ? +value.fatAmount : undefined,
-      muscleAmount: value.muscleAmount ? +value.muscleAmount : undefined,
+      weightLbs:
+        this.userSettings.weightMetricDisplay === weightMetrics.pounds.name
+          ? +value.weight
+          : this.weightConversionService.kilogramsToPounds(+value.weight),
+      weightKgs:
+        this.userSettings.weightMetricDisplay === weightMetrics.kilograms.name
+          ? +value.weight
+          : this.weightConversionService.poundsToKilograms(+value.weight),
+      muscleLbs:
+        this.userSettings.weightMetricDisplay === weightMetrics.pounds.name
+          ? +value.muscle
+          : this.weightConversionService.kilogramsToPounds(+value.muscle),
+      muscleKgs:
+        this.userSettings.weightMetricDisplay === weightMetrics.kilograms.name
+          ? +value.muscle
+          : this.weightConversionService.poundsToKilograms(+value.muscle),
+      fatLbs:
+        this.userSettings.weightMetricDisplay === weightMetrics.pounds.name
+          ? +value.fat
+          : this.weightConversionService.kilogramsToPounds(+value.fat),
+      fatKgs:
+        this.userSettings.weightMetricDisplay === weightMetrics.kilograms.name
+          ? +value.fat
+          : this.weightConversionService.poundsToKilograms(+value.fat),
     };
 
-    this.weightLogService.updateWeightLogEntry(id, newWeightLog);
+    this.ionicWeightLogService.updateWeightLogEntry(newWeightLog);
     this.weightEditForm.reset();
     this.isOpen = false;
   }
 
   deleteEntry() {
-    this.weightLogService.deleteWeightLogEntry(this.selectedDoc.id);
+    this.ionicWeightLogService.deleteWeightLogEntry(this.selectedDoc.id);
     this.isOpen = false;
   }
 }
