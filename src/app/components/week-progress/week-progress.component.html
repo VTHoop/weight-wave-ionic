@@ -68,7 +68,7 @@
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col>
+      <ion-col *ngIf="isFatLogger">
         <ion-card class="snapshot__fat">
           <ion-card-header>
             <ion-card-title>Fat</ion-card-title>
@@ -96,7 +96,7 @@
           </ion-card-content>
         </ion-card>
       </ion-col>
-      <ion-col>
+      <ion-col *ngIf="isMuscleLogger">
         <ion-card class="snapshot__muscle">
           <ion-card-header>
             <ion-card-title>Muscle</ion-card-title>

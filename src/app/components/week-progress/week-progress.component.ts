@@ -24,6 +24,8 @@ export class WeekProgressComponent implements OnInit {
   public ProgressPeriod: any = ProgressPeriod;
   selectedProgressPeriod = ProgressPeriod.Week;
   progressDisplay$: Observable<ProgressDisplay>;
+  isFatLogger: boolean;
+  isMuscleLogger: boolean;
 
   constructor(
     public movingAverageService: MovingAverageService,
@@ -38,6 +40,8 @@ export class WeekProgressComponent implements OnInit {
       this.ionicWeightLogService.settings$,
     ]).pipe(
       map(([log, weeksToCompare, settings]) => {
+        this.isFatLogger = settings.isLoggingFat;
+        this.isMuscleLogger = settings.isLoggingMuscle;
         const changeOverTime = this.movingAverageService.getWeekByWeekAverage(
           log,
           weeksToCompare,
