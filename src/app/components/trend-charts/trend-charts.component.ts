@@ -1,10 +1,17 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Chart } from 'chart.js/auto';
-import { Subscription, map, BehaviorSubject, combineLatest } from 'rxjs';
+import {
+  Subscription,
+  map,
+  BehaviorSubject,
+  combineLatest,
+  Observable,
+} from 'rxjs';
 import { AverageWeight } from 'src/models/models/weight-log.model';
 import {
   IonicWeightLogService,
+  Settings,
   weightMetrics,
 } from 'src/services/ionic-weight-log.service';
 
@@ -17,6 +24,7 @@ import {
 export class TrendChartsComponent implements OnInit {
   openSubscriptions: Subscription[] = [];
   daysToShow$: BehaviorSubject<number> = new BehaviorSubject(30);
+  settings$: Observable<Settings>;
   selectedChartSpan = ChartSpan.Month;
   public ChartSpan: any = ChartSpan;
 
@@ -38,6 +46,7 @@ export class TrendChartsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.settings$ = this.ionicWeightLogService.settings$;
     this.createCharts();
   }
 
@@ -63,33 +72,16 @@ export class TrendChartsComponent implements OnInit {
       combineLatest([
         this.ionicWeightLogService.avgWeightLog$,
         this.daysToShow$,
-        this.ionicWeightLogService.settings$,
+        this.settings$,
       ])
         .pipe(
           map(([log, daysToShow, settings]) => {
             if (log.length) {
-              this.resetChart('weight-chart');
-              this.resetChart('fat-chart');
-              this.resetChart('muscle-chart');
-              const labels: (string | null)[] = [];
-              const weightValues: (number | null)[] = [];
-              const fatValues: (number | null)[] = [];
-              const muscleValues: (number | null)[] = [];
+              this.resetCharts();
 
-              for (let i = daysToShow; i >= log.length; i--) {
-                labels.push(
-                  this.dateformat.transform(
-                    new Date(
-                      log[0].avgWeightDate.getFullYear(),
-                      log[0].avgWeightDate.getMonth(),
-                      log[0].avgWeightDate.getDate() - i
-                    )
-                  )
-                );
-                weightValues.push(null);
-                fatValues.push(null);
-                muscleValues.push(null);
-              }
+              const { labels, weightValues, fatValues, muscleValues } =
+                this.prependNullsWhereScaleIsLargerThanData(daysToShow, log);
+
               log.slice(daysToShow * -1).map((row) => {
                 labels.push(
                   this.dateformat.transform(row.avgWeightDate, 'MMM d')
@@ -114,30 +106,33 @@ export class TrendChartsComponent implements OnInit {
                   }
                 }
               });
+
               this.createChart(
                 'weight-chart',
                 labels,
                 weightValues,
-                'rgb(75, 192, 192)',
                 'Overall Weight',
                 '#3d535c'
               );
-              this.createChart(
-                'fat-chart',
-                labels,
-                fatValues,
-                'rgb(192, 75, 192)',
-                'Fat',
-                '#9fb992'
-              );
-              this.createChart(
-                'muscle-chart',
-                labels,
-                muscleValues,
-                'rgb(192, 192, 75)',
-                'Muscle',
-                '#6d8dab'
-              );
+              if (settings.isLoggingFat) {
+                this.createChart(
+                  'fat-chart',
+                  labels,
+                  fatValues,
+                  'Fat',
+                  '#9fb992'
+                );
+              }
+
+              if (settings.isLoggingMuscle) {
+                this.createChart(
+                  'muscle-chart',
+                  labels,
+                  muscleValues,
+                  'Muscle',
+                  '#6d8dab'
+                );
+              }
             }
           })
         )
@@ -145,11 +140,7 @@ export class TrendChartsComponent implements OnInit {
     );
   };
 
-  getChartData = (
-    labels: (string | null)[],
-    values: (number | null)[],
-    color: string
-  ) => ({
+  getChartData = (labels: (string | null)[], values: (number | null)[]) => ({
     labels: labels,
     datasets: [
       {
@@ -170,6 +161,12 @@ export class TrendChartsComponent implements OnInit {
         a.weightDate - b.weightDate
     );
 
+  resetCharts = () => {
+    this.resetChart('weight-chart');
+    this.resetChart('fat-chart');
+    this.resetChart('muscle-chart');
+  };
+
   resetChart = (chartName: string) => {
     const chart = Chart.getChart(chartName);
     if (chart !== undefined) {
@@ -181,7 +178,6 @@ export class TrendChartsComponent implements OnInit {
     name: string,
     labels: (string | null)[],
     values: (number | null)[],
-    color: string,
     title: string,
     backgroundColor: string
   ): void => {
@@ -192,7 +188,7 @@ export class TrendChartsComponent implements OnInit {
       document.getElementById(name),
       {
         type: 'line',
-        data: this.getChartData(labels, values, color),
+        data: this.getChartData(labels, values),
         plugins: [this.plugin],
         options: {
           plugins: {
@@ -248,6 +244,37 @@ export class TrendChartsComponent implements OnInit {
         },
       }
     );
+  };
+
+  prependNullsWhereScaleIsLargerThanData = (
+    daysToShow: number,
+    log: AverageWeight[]
+  ) => {
+    const labels: (string | null)[] = [];
+    const weightValues: (number | null)[] = [];
+    const fatValues: (number | null)[] = [];
+    const muscleValues: (number | null)[] = [];
+
+    for (let i = daysToShow; i >= log.length; i--) {
+      labels.push(
+        this.dateformat.transform(
+          new Date(
+            log[0].avgWeightDate.getFullYear(),
+            log[0].avgWeightDate.getMonth(),
+            log[0].avgWeightDate.getDate() - i
+          )
+        )
+      );
+      weightValues.push(null);
+      fatValues.push(null);
+      muscleValues.push(null);
+    }
+    return {
+      labels,
+      weightValues,
+      fatValues,
+      muscleValues,
+    };
   };
 
   ngOnDestroy(): void {

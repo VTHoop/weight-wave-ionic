@@ -24,14 +24,14 @@
       Year
     </div>
   </div>
-  <div class="trends__charts">
+  <div class="trends__charts" *ngIf="settings$ | async as settings">
     <div>
       <div><canvas id="weight-chart"></canvas></div>
     </div>
-    <div>
+    <div [ngClass]="{ 'hide-chart': !settings.isLoggingFat }">
       <div><canvas id="fat-chart"></canvas></div>
     </div>
-    <div>
+    <div [ngClass]="{ 'hide-chart': !settings.isLoggingMuscle }">
       <div><canvas id="muscle-chart"></canvas></div>
     </div>
   </div>
