@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 import { Platform } from '@ionic/angular';
 
-import { AdMob, AdMobInitializationOptions } from '@capacitor-community/admob';
+// import { AdMob, AdMobInitializationOptions } from '@capacitor-community/admob';
 
 @Component({
   selector: 'app-root',
@@ -11,19 +11,19 @@ import { AdMob, AdMobInitializationOptions } from '@capacitor-community/admob';
 })
 export class AppComponent {
   constructor(private platform: Platform) {
-    this.initializeApp();
+    // this.initializeApp();
   }
 
-  initializeApp() {
-    this.platform.ready().then(() => {
-      /**
-       * initialize() require after platform.ready();
-       */
-      AdMob.initialize({
-        requestTrackingAuthorization: true,
-        testingDevices: ['581e9ff8-0552-4912-8036-d70b1fcb8d97'],
-        initializeForTesting: true,
-      });
-    });
-  }
+  // initializeApp() {
+  //   this.platform.ready().then(() => {
+  //     /**
+  //      * initialize() require after platform.ready();
+  //      */
+  //     AdMob.initialize({
+  //       requestTrackingAuthorization: true,
+  //       testingDevices: ['581e9ff8-0552-4912-8036-d70b1fcb8d97'],
+  //       initializeForTesting: true,
+  //     });
+  //   });
+  // }
 }
