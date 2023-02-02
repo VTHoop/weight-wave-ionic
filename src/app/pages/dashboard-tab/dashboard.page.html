@@ -1,4 +1,15 @@
 <ion-content class="ion-padding-top">
-  <app-week-progress></app-week-progress>
-  <app-trend-charts></app-trend-charts>
+  <app-week-progress
+    [progressDisplay$]="progressDisplay$"
+    [profilePicUrl]="selectedImage"
+    [isFatLogger]="isFatLogger"
+    [isMuscleLogger]="isMuscleLogger"
+    (comparisonPeriodChanged)="onSummaryPeriodChanged($event)"
+  ></app-week-progress>
+  <app-trend-charts
+    [chartData$]="chartData$"
+    [isFatLogger]="isFatLogger"
+    [isMuscleLogger]="isMuscleLogger"
+    (comparisonPeriodChanged)="onChartPeriodChanged($event)"
+  ></app-trend-charts>
 </ion-content>

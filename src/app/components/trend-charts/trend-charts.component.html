@@ -28,15 +28,11 @@
     <div>
       <div><canvas id="weight-chart"></canvas></div>
     </div>
-    <ng-container *ngIf="settings$ | async as settings">
-      <div [ngClass]="{ 'hide-chart': !settings.isLoggingFat }">
-        <div><canvas id="fat-chart"></canvas></div>
-      </div>
-    </ng-container>
-    <ng-container *ngIf="settings$ | async as settings">
-      <div [ngClass]="{ 'hide-chart': !settings.isLoggingMuscle }">
-        <div><canvas id="muscle-chart"></canvas></div>
-      </div>
-    </ng-container>
+    <div [ngClass]="{ 'hide-chart': !isFatLogger }">
+      <div><canvas id="fat-chart"></canvas></div>
+    </div>
+    <div [ngClass]="{ 'hide-chart': !isMuscleLogger }">
+      <div><canvas id="muscle-chart"></canvas></div>
+    </div>
   </div>
 </div>

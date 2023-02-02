@@ -1,18 +1,10 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Chart } from 'chart.js/auto';
-import {
-  Subscription,
-  map,
-  BehaviorSubject,
-  combineLatest,
-  Observable,
-} from 'rxjs';
-import { AverageWeight } from 'src/models/models/weight-log.model';
+import { Subscription, BehaviorSubject, Observable, tap } from 'rxjs';
 import {
   IonicWeightLogService,
   Settings,
-  weightMetrics,
 } from 'src/services/ionic-weight-log.service';
 
 @Component({
@@ -23,7 +15,13 @@ import {
 })
 export class TrendChartsComponent implements OnInit {
   openSubscriptions: Subscription[] = [];
-  daysToShow$: BehaviorSubject<number> = new BehaviorSubject(30);
+
+  @Input() chartData$: Observable<ChartData>;
+  @Input() isFatLogger: boolean;
+  @Input() isMuscleLogger: boolean;
+
+  @Output() comparisonPeriodChanged = new EventEmitter<number>();
+
   settings$: Observable<Settings>;
   selectedChartSpan = ChartSpan.Month;
   public ChartSpan: any = ChartSpan;
@@ -40,10 +38,7 @@ export class TrendChartsComponent implements OnInit {
     },
   };
 
-  constructor(
-    private ionicWeightLogService: IonicWeightLogService,
-    private dateformat: DatePipe
-  ) {}
+  constructor(private ionicWeightLogService: IonicWeightLogService) {}
 
   ngOnInit(): void {
     this.settings$ = this.ionicWeightLogService.settings$;
@@ -53,62 +48,28 @@ export class TrendChartsComponent implements OnInit {
   changeFilter(filterValue: ChartSpan): void {
     switch (filterValue) {
       case ChartSpan.Month:
-        this.daysToShow$.next(30);
+        this.comparisonPeriodChanged.emit(30);
         this.selectedChartSpan = ChartSpan.Month;
         break;
       case ChartSpan.Quarter:
-        this.daysToShow$.next(120);
+        this.comparisonPeriodChanged.emit(120);
         this.selectedChartSpan = ChartSpan.Quarter;
         break;
       case ChartSpan.Year:
-        this.daysToShow$.next(365);
+        this.comparisonPeriodChanged.emit(365);
         this.selectedChartSpan = ChartSpan.Year;
         break;
     }
   }
 
-  createCharts = () => {
+  private createCharts = () => {
     this.openSubscriptions.push(
-      combineLatest([
-        this.ionicWeightLogService.avgWeightLog$,
-        this.daysToShow$,
-        this.settings$,
-      ])
+      this.chartData$
         .pipe(
-          map(([log, daysToShow, settings]) => {
-            if (log.allAverages.length) {
+          tap((chartData) => {
+            const { labels, weightValues, fatValues, muscleValues } = chartData;
+            if (chartData.labels.length) {
               this.resetCharts();
-
-              const { labels, weightValues, fatValues, muscleValues } =
-                this.prependNullsWhereScaleIsLargerThanData(
-                  daysToShow,
-                  log.allAverages
-                );
-
-              log.allAverages.slice(daysToShow * -1).map((row) => {
-                labels.push(
-                  this.dateformat.transform(row.avgWeightDate, 'MMM d')
-                );
-                if (
-                  settings.weightMetricDisplay === weightMetrics.pounds.name
-                ) {
-                  weightValues.push(row.avgWeightLbs);
-                  if (row.avgFatLbs) {
-                    fatValues.push(row.avgFatLbs);
-                  }
-                  if (row.avgMuscleLbs) {
-                    muscleValues.push(row.avgMuscleLbs);
-                  }
-                } else {
-                  weightValues.push(row.avgWeightKgs);
-                  if (row.avgFatKgs) {
-                    fatValues.push(row.avgFatKgs);
-                  }
-                  if (row.avgMuscleKgs) {
-                    muscleValues.push(row.avgMuscleKgs);
-                  }
-                }
-              });
 
               this.createChart(
                 'weight-chart',
@@ -118,25 +79,21 @@ export class TrendChartsComponent implements OnInit {
                 '#3d535c'
               );
 
-              if (settings.isLoggingFat) {
-                this.createChart(
-                  'fat-chart',
-                  labels,
-                  fatValues,
-                  'Fat',
-                  '#9fb992'
-                );
-              }
+              this.createChart(
+                'fat-chart',
+                labels,
+                fatValues,
+                'Fat',
+                '#9fb992'
+              );
 
-              if (settings.isLoggingMuscle) {
-                this.createChart(
-                  'muscle-chart',
-                  labels,
-                  muscleValues,
-                  'Muscle',
-                  '#6d8dab'
-                );
-              }
+              this.createChart(
+                'muscle-chart',
+                labels,
+                muscleValues,
+                'Muscle',
+                '#6d8dab'
+              );
             }
           })
         )
@@ -144,7 +101,10 @@ export class TrendChartsComponent implements OnInit {
     );
   };
 
-  getChartData = (labels: (string | null)[], values: (number | null)[]) => ({
+  private getChartDataAttributes = (
+    labels: (string | null)[],
+    values: (number | null)[]
+  ) => ({
     labels: labels,
     datasets: [
       {
@@ -158,27 +118,20 @@ export class TrendChartsComponent implements OnInit {
     ],
   });
 
-  sortChartData = (log: AverageWeight[]) =>
-    log.sort(
-      (a, b) =>
-        //@ts-ignore
-        a.weightDate - b.weightDate
-    );
-
-  resetCharts = () => {
+  private resetCharts = () => {
     this.resetChart('weight-chart');
     this.resetChart('fat-chart');
     this.resetChart('muscle-chart');
   };
 
-  resetChart = (chartName: string) => {
+  private resetChart = (chartName: string) => {
     const chart = Chart.getChart(chartName);
     if (chart !== undefined) {
       chart.destroy();
     }
   };
 
-  createChart = (
+  private createChart = (
     name: string,
     labels: (string | null)[],
     values: (number | null)[],
@@ -192,7 +145,7 @@ export class TrendChartsComponent implements OnInit {
       document.getElementById(name),
       {
         type: 'line',
-        data: this.getChartData(labels, values),
+        data: this.getChartDataAttributes(labels, values),
         plugins: [this.plugin],
         options: {
           plugins: {
@@ -250,37 +203,6 @@ export class TrendChartsComponent implements OnInit {
     );
   };
 
-  prependNullsWhereScaleIsLargerThanData = (
-    daysToShow: number,
-    log: AverageWeight[]
-  ) => {
-    const labels: (string | null)[] = [];
-    const weightValues: (number | null)[] = [];
-    const fatValues: (number | null)[] = [];
-    const muscleValues: (number | null)[] = [];
-
-    for (let i = daysToShow; i >= log.length; i--) {
-      labels.push(
-        this.dateformat.transform(
-          new Date(
-            log[0].avgWeightDate.getFullYear(),
-            log[0].avgWeightDate.getMonth(),
-            log[0].avgWeightDate.getDate() - i
-          )
-        )
-      );
-      weightValues.push(null);
-      fatValues.push(null);
-      muscleValues.push(null);
-    }
-    return {
-      labels,
-      weightValues,
-      fatValues,
-      muscleValues,
-    };
-  };
-
   ngOnDestroy(): void {
     this.openSubscriptions.forEach((subscription) =>
       subscription.unsubscribe()
@@ -292,4 +214,11 @@ enum ChartSpan {
   Month,
   Quarter,
   Year,
+}
+
+export interface ChartData {
+  labels: string[];
+  weightValues: number[];
+  fatValues: number[];
+  muscleValues: number[];
 }
