@@ -42,7 +42,10 @@
     <ion-row class="snapshot__row--overall">
       <ion-col>
         <ion-card class="snapshot--overall">
-          <ion-card-content class="snapshot__content">
+          <ion-card-content
+            class="snapshot__content"
+            *ngIf="progressDisplay.weight; else noCurrentWeightsMessage"
+          >
             <div class="snapshot__weight">
               <div class="snapshot__title">Current Avg Weight</div>
               <div class="snapshot__value">
@@ -74,7 +77,10 @@
           <ion-card-header>
             <ion-card-title>Fat</ion-card-title>
           </ion-card-header>
-          <ion-card-content class="snapshot__content">
+          <ion-card-content
+            class="snapshot__content"
+            *ngIf="progressDisplay.fat; else noCurrentFatMessage"
+          >
             <div class="snapshot__weight">
               <div class="snapshot__subtitle">Current Avg</div>
               <div class="snapshot__value">
@@ -103,7 +109,10 @@
             <ion-card-title>Muscle</ion-card-title>
           </ion-card-header>
 
-          <ion-card-content class="snapshot__content">
+          <ion-card-content
+            class="snapshot__content"
+            *ngIf="progressDisplay.muscle; else noCurrentMuscleMessage"
+          >
             <div class="snapshot__weight">
               <div class="snapshot__subtitle">Current Avg</div>
               <div class="snapshot__value">
@@ -129,6 +138,39 @@
     </ion-row>
   </ion-grid>
 </div>
-<ng-template #loading>
-  <ion-spinner name="circular"></ion-spinner>
+
+<ng-template #noCurrentWeightsMessage>
+  <ion-card-content class="snapshot__content">
+    <div class="snapshot__weight">
+      <div class="snapshot__title">Current Avg Weight</div>
+      <div class="snapshot__value">No recordings this period</div>
+    </div>
+    <div class="snapshot__placeholder"></div>
+    <div class="snapshot__compare">
+      <div class="snapshot__title">Since Last {{ selectedProgressPeriod }}</div>
+      <div class="snapshot__value">
+        <p>Keep entering weights to see your progress!</p>
+      </div>
+    </div>
+  </ion-card-content>
+</ng-template>
+
+<ng-template #noCurrentFatMessage>
+  <ion-card-content class="snapshot__content">
+    <div class="snapshot__weight">
+      <div class="snapshot__value">
+        Keep entering weights to see your progress!
+      </div>
+    </div>
+  </ion-card-content>
+</ng-template>
+
+<ng-template #noCurrentMuscleMessage>
+  <ion-card-content class="snapshot__content">
+    <div class="snapshot__weight">
+      <div class="snapshot__value">
+        Keep entering weights to see your progress!
+      </div>
+    </div>
+  </ion-card-content>
 </ng-template>
