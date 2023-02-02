@@ -14,7 +14,7 @@ import {
 } from 'rxjs';
 
 import * as CordovaSQLiteDriver from 'localforage-cordovasqlitedriver';
-import { AverageWeight, WeightLogId } from 'src/models/models/weight-log.model';
+import { WeightLogId } from 'src/models/models/weight-log.model';
 import {
   WeightUnitAbbreviation,
   WeightUnitDisplay,
@@ -30,6 +30,7 @@ import {
 })
 export class IonicWeightLogService {
   public storageReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public isUserSetup = new ReplaySubject<boolean>(1);
   private _userSettings$ = new ReplaySubject<Settings>(1);
   private _weightLog$ = new ReplaySubject<WeightLogId[]>(1);
   private _avgWeightLog$ = new ReplaySubject<MovingAverageData>(1);
@@ -66,6 +67,7 @@ export class IonicWeightLogService {
 
   public async saveSettings(value: any) {
     await this.storage?.set(WeightLogStorage.Settings, value);
+    this.isUserSetup.next(true);
     this.loadSettings();
   }
 
@@ -130,6 +132,11 @@ export class IonicWeightLogService {
         map(([dbReady, settings]) => {
           if (dbReady) {
             this._userSettings$.next(settings);
+            if (settings) {
+              this.isUserSetup.next(true);
+            } else {
+              this.isUserSetup.next(false);
+            }
           }
         })
       )

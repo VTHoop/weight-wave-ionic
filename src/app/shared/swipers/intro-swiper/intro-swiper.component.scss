@@ -1,0 +1,54 @@
+.my-swiper {
+  height: 100%;
+}
+
+.swiper-slide-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 100%;
+  margin: auto;
+  background: url('../../../../assets/slider_bg.png');
+  background-size: cover;
+  font-size: 24px;
+  font-family: Raleway;
+  font-weight: bold;
+  padding: 30px 40px;
+  line-height: 200%;
+  flex-direction: column;
+}
+
+.swiper {
+  &__2 {
+    &__top{
+      flex: 0 0 25%;
+    }
+
+    &__center {
+      flex: 1 1 0;
+      display: flex;
+      align-items: center;
+    }
+
+    &__bottom {
+      flex: 0 0 25%;
+      padding-top: 10px;
+    }
+  }
+}
+
+.profile {
+  padding: 40px;
+  &__item{
+    margin-bottom: 30px;
+    &-header{
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    &--metric{
+      padding-left: 20px;
+    }
+  }
+}
