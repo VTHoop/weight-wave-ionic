@@ -117,6 +117,7 @@ export class TrendChartsComponent implements OnInit {
                 'Overall Weight',
                 '#3d535c'
               );
+
               if (settings.isLoggingFat) {
                 this.createChart(
                   'fat-chart',

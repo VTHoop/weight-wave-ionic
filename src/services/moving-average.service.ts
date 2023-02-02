@@ -46,7 +46,7 @@ export class MovingAverageService {
 
     for (
       let iDate = new Date(array[0].weightDate);
-      iDate < new Date(array[array.length - 1].weightDate);
+      iDate < new Date();
       iDate.setDate(iDate.getDate() + 1)
     ) {
       const weightedWeight = this.calcMovingAverage(
