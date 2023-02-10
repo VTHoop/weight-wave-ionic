@@ -14,6 +14,7 @@ import { ProgressDisplay } from 'src/app/components/week-progress/week-progress.
 import { AverageWeight } from 'src/models/models/weight-log.model';
 import {
   IonicWeightLogService,
+  Settings,
   weightMetrics,
 } from 'src/services/ionic-weight-log.service';
 import { MovingAverageService } from 'src/services/moving-average.service';
@@ -25,6 +26,8 @@ import { MovingAverageService } from 'src/services/moving-average.service';
 export class DashboardPage implements OnInit, OnDestroy {
   openSubscriptions: Subscription[] = [];
 
+  settings$: Observable<Settings>;
+
   progressDisplay$: Observable<ProgressDisplay>;
   weeksToCompare$: BehaviorSubject<number> = new BehaviorSubject(2);
 
@@ -34,6 +37,10 @@ export class DashboardPage implements OnInit, OnDestroy {
   selectedImage: string = '/assets/person-circle-outline.svg';
   isFatLogger: boolean;
   isMuscleLogger: boolean;
+
+  isCurrentWeightPeriodRecorded: boolean;
+  isCurrentFatPeriodRecorded: boolean;
+  isCurrentMusclePeriodRecorded: boolean;
 
   loader: HTMLIonLoadingElement;
   isLoading$ = new BehaviorSubject(true);
@@ -63,52 +70,69 @@ export class DashboardPage implements OnInit, OnDestroy {
         this.selectedImage = settings.profilePicUrl
           ? settings.profilePicUrl
           : this.selectedImage;
-        const changeOverTime = this.movingAverageService.getWeekByWeekAverage(
+
+        const {
+          currentWeekAverages,
+          comparisonWeekAverages,
+          isComparisonEntryFound,
+          isComparisonWeightFound,
+          isComparisonFatFound,
+          isComparisonMuscleFound,
+        } = this.movingAverageService.getComparisonAverages(
           log,
-          weeksToCompare,
-          new Date()
+          weeksToCompare
         );
 
         this.isFatLogger = settings.isLoggingFat;
         this.isMuscleLogger = settings.isLoggingMuscle;
 
-        const progressDisplay: ProgressDisplay =
-          settings.weightMetricDisplay === weightMetrics.pounds.name
-            ? {
-                weight: changeOverTime[0].avgWeightLbs,
-                weightChange:
-                  changeOverTime[0].avgWeightLbs -
-                  changeOverTime[weeksToCompare - 1].avgWeightLbs,
-                fat: changeOverTime[0].avgFatLbs,
-                fatChange:
-                  changeOverTime[0].avgFatLbs -
-                  changeOverTime[weeksToCompare - 1].avgFatLbs,
-                muscle: changeOverTime[0].avgMuscleLbs,
-                muscleChange:
-                  changeOverTime[0].avgMuscleLbs -
-                  changeOverTime[weeksToCompare - 1].avgMuscleLbs,
-                unitAbbrev: weightMetrics.pounds.abbreviation,
-                name: settings.personName,
-              }
-            : {
-                weight: changeOverTime[0].avgWeightKgs,
-                weightChange:
-                  changeOverTime[0].avgWeightKgs -
-                  changeOverTime[weeksToCompare - 1].avgWeightKgs,
-                fat: changeOverTime[0].avgFatKgs,
-                fatChange:
-                  changeOverTime[0].avgFatKgs -
-                  changeOverTime[weeksToCompare - 1].avgFatKgs,
-                muscle: changeOverTime[0].avgMuscleKgs,
-                muscleChange:
-                  changeOverTime[0].avgMuscleKgs -
-                  changeOverTime[weeksToCompare - 1].avgMuscleKgs,
-                unitAbbrev: weightMetrics.kilograms.abbreviation,
-                name: settings.personName,
-              };
+        this.isCurrentWeightPeriodRecorded =
+          !!currentWeekAverages?.avgWeightLbs;
+        this.isCurrentFatPeriodRecorded = !!currentWeekAverages?.avgFatLbs;
+        this.isCurrentMusclePeriodRecorded =
+          !!currentWeekAverages?.avgMuscleLbs;
+
+        return settings.weightMetricDisplay === weightMetrics.pounds.name
+          ? {
+              weight: currentWeekAverages?.avgWeightLbs,
+              weightChange:
+                currentWeekAverages?.avgWeightLbs -
+                comparisonWeekAverages?.avgWeightLbs,
+              fat: currentWeekAverages?.avgFatLbs,
+              fatChange:
+                currentWeekAverages?.avgFatLbs -
+                comparisonWeekAverages?.avgFatLbs,
+              muscle: currentWeekAverages?.avgMuscleLbs,
+              muscleChange:
+                currentWeekAverages?.avgMuscleLbs -
+                comparisonWeekAverages?.avgMuscleLbs,
+              unitAbbrev: weightMetrics.pounds.abbreviation,
+              name: settings.personName,
+              isComparisonWeightFound,
+              isComparisonFatFound,
+              isComparisonMuscleFound,
+            }
+          : {
+              weight: currentWeekAverages?.avgWeightKgs,
+              weightChange:
+                currentWeekAverages?.avgWeightKgs -
+                comparisonWeekAverages?.avgWeightKgs,
+              fat: currentWeekAverages?.avgFatKgs,
+              fatChange:
+                currentWeekAverages?.avgFatKgs -
+                comparisonWeekAverages?.avgFatKgs,
+              muscle: currentWeekAverages?.avgMuscleKgs,
+              muscleChange:
+                currentWeekAverages?.avgMuscleKgs -
+                comparisonWeekAverages?.avgMuscleKgs,
+              unitAbbrev: weightMetrics.kilograms.abbreviation,
+              name: settings.personName,
+              isComparisonWeightFound,
+              isComparisonFatFound,
+              isComparisonMuscleFound,
+            };
 
         // this.isLoading$.next(false);
-        return progressDisplay;
       })
     );
   }
@@ -120,14 +144,21 @@ export class DashboardPage implements OnInit, OnDestroy {
       this.weightLogService.settings$,
     ]).pipe(
       map(([log, daysToShow, settings]) => {
+        if (!log.allAverages.length) {
+          return {
+            labels: [],
+            weightValues: [],
+            fatValues: [],
+            muscleValues: [],
+          };
+        }
         const { labels, weightValues, fatValues, muscleValues } =
           this.prependNullsWhereScaleIsLargerThanData(
             daysToShow,
             log.allAverages
           );
-
         log.allAverages.slice(daysToShow * -1).map((row) => {
-          labels.push(this.dateformat.transform(row.avgWeightDate, 'MMM d'));
+          labels.push(this.dateformat.transform(row.avgWeightDate));
           if (settings.weightMetricDisplay === weightMetrics.pounds.name) {
             weightValues.push(row.avgWeightLbs);
             if (row.avgFatLbs) {
@@ -165,13 +196,15 @@ export class DashboardPage implements OnInit, OnDestroy {
     const fatValues: (number | null)[] = [];
     const muscleValues: (number | null)[] = [];
 
+    const startDate = log[0].avgWeightDate;
+
     for (let i = daysToShow; i >= log.length; i--) {
       labels.push(
         this.dateformat.transform(
           new Date(
-            log[0].avgWeightDate.getFullYear(),
-            log[0].avgWeightDate.getMonth(),
-            log[0].avgWeightDate.getDate() - i
+            startDate.getFullYear(),
+            startDate.getMonth(),
+            startDate.getDate() - i
           )
         )
       );

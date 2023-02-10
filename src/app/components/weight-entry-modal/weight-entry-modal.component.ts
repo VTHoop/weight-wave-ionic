@@ -6,6 +6,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { WeightUnitDisplay } from 'src/models/enums/weight-unit.enum';
 import { WeightLog, WeightLogId } from 'src/models/models/weight-log.model';
 import {
   IonicWeightLogService,
@@ -52,40 +53,65 @@ export class WeightEntryModalComponent implements OnInit {
     });
   }
 
-  onSubmit(value: WeightLog) {
+  onSubmit(value: any) {
     const newWeightLog: WeightLogId = {
       ...value,
       id: uuidv4(),
       creationDate: new Date(),
       weightDate: new Date(value.weightDate),
-      weightLbs:
-        this.userSettings.weightMetricDisplay === weightMetrics.pounds.name
-          ? +value.weightAmount
-          : this.weightConversionService.kilogramsToPounds(+value.weightAmount),
-      weightKgs:
-        this.userSettings.weightMetricDisplay === weightMetrics.kilograms.name
-          ? +value.weightAmount
-          : this.weightConversionService.poundsToKilograms(+value.weightAmount),
-      muscleLbs:
-        this.userSettings.weightMetricDisplay === weightMetrics.pounds.name
-          ? +value.muscleAmount
-          : this.weightConversionService.kilogramsToPounds(+value.muscleAmount),
-      muscleKgs:
-        this.userSettings.weightMetricDisplay === weightMetrics.kilograms.name
-          ? +value.muscleAmount
-          : this.weightConversionService.poundsToKilograms(+value.muscleAmount),
-      fatLbs:
-        this.userSettings.weightMetricDisplay === weightMetrics.pounds.name
-          ? +value.fatAmount
-          : this.weightConversionService.kilogramsToPounds(+value.fatAmount),
-      fatKgs:
-        this.userSettings.weightMetricDisplay === weightMetrics.kilograms.name
-          ? +value.fatAmount
-          : this.weightConversionService.poundsToKilograms(+value.fatAmount),
+      weightLbs: this.convertFormEntryToDbValue(
+        +value.weightAmount,
+        weightMetrics.pounds.name,
+        this.userSettings.weightMetricDisplay
+      ),
+      weightKgs: this.convertFormEntryToDbValue(
+        +value.weightAmount,
+        weightMetrics.kilograms.name,
+        this.userSettings.weightMetricDisplay
+      ),
+      muscleLbs: this.convertFormEntryToDbValue(
+        +value.muscleAmount,
+        weightMetrics.pounds.name,
+        this.userSettings.weightMetricDisplay
+      ),
+      muscleKgs: this.convertFormEntryToDbValue(
+        +value.muscleAmount,
+        weightMetrics.kilograms.name,
+        this.userSettings.weightMetricDisplay
+      ),
+      fatLbs: this.convertFormEntryToDbValue(
+        +value.fatAmount,
+        weightMetrics.pounds.name,
+        this.userSettings.weightMetricDisplay
+      ),
+      fatKgs: this.convertFormEntryToDbValue(
+        +value.fatAmount,
+        weightMetrics.kilograms.name,
+        this.userSettings.weightMetricDisplay
+      ),
     };
     this.ionicWeightLogService.insertWeightLogEntry(newWeightLog);
     this.weightEntryForm.reset();
     this.setOpen(false);
+  }
+
+  convertFormEntryToDbValue(
+    value: number,
+    dbUnit: WeightUnitDisplay,
+    formUnit: WeightUnitDisplay
+  ) {
+    if (!value) {
+      return undefined;
+    }
+    if (dbUnit === formUnit) return value;
+    switch (dbUnit) {
+      case weightMetrics.kilograms.name:
+        return this.weightConversionService.poundsToKilograms(value);
+      case weightMetrics.pounds.name:
+        return this.weightConversionService.kilogramsToPounds(value);
+      default:
+        return value;
+    }
   }
 
   setOpen(isOpen: boolean) {

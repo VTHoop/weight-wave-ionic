@@ -4,9 +4,6 @@ import Timestamp = firebase.firestore.Timestamp;
 export interface WeightLog {
   weightDate: Date;
   creationDate: Date;
-  weightAmount?: number;
-  muscleAmount?: number;
-  fatAmount?: number;
   weightLbs: number;
   muscleLbs?: number;
   fatLbs?: number;

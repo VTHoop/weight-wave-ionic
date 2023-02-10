@@ -44,7 +44,7 @@
         <ion-card class="snapshot--overall">
           <ion-card-content
             class="snapshot__content"
-            *ngIf="progressDisplay.weight; else noCurrentWeightsMessage"
+            *ngIf="isCurrentWeightPeriodRecorded; else noCurrentWeightsMessage"
           >
             <div class="snapshot__weight">
               <div class="snapshot__title">Current Avg Weight</div>
@@ -60,11 +60,20 @@
               <div class="snapshot__title">
                 Since Last {{ selectedProgressPeriod }}
               </div>
-              <div class="snapshot__value">
+              <div
+                class="snapshot__value"
+                *ngIf="progressDisplay.isComparisonWeightFound"
+              >
                 {{ progressDisplay.weightChange | number : "1.1-2" }}
                 <span class="snapshot__units">{{
                   progressDisplay.unitAbbrev
                 }}</span>
+              </div>
+              <div
+                class="snapshot__value"
+                *ngIf="!progressDisplay.isComparisonWeightFound"
+              >
+                Keep Logging!
               </div>
             </div>
           </ion-card-content>
@@ -79,7 +88,7 @@
           </ion-card-header>
           <ion-card-content
             class="snapshot__content"
-            *ngIf="progressDisplay.fat; else noCurrentFatMessage"
+            *ngIf="isCurrentFatPeriodRecorded; else noCurrentFatMessage"
           >
             <div class="snapshot__weight">
               <div class="snapshot__subtitle">Current Avg</div>
@@ -93,11 +102,20 @@
             <div class="snapshot__placeholder"></div>
             <div class="snapshot__compare" #snapshotFat>
               <div class="snapshot__subtitle">Change</div>
-              <div class="snapshot__value">
+              <div
+                class="snapshot__value"
+                *ngIf="progressDisplay.isComparisonFatFound"
+              >
                 {{ progressDisplay.fatChange | number : "1.1-2" }}
                 <span class="snapshot__units">{{
                   progressDisplay.unitAbbrev
                 }}</span>
+              </div>
+              <div
+                class="snapshot__value"
+                *ngIf="!progressDisplay.isComparisonFatFound"
+              >
+                Keep Logging!
               </div>
             </div>
           </ion-card-content>
@@ -111,7 +129,7 @@
 
           <ion-card-content
             class="snapshot__content"
-            *ngIf="progressDisplay.muscle; else noCurrentMuscleMessage"
+            *ngIf="isCurrentMusclePeriodRecorded; else noCurrentMuscleMessage"
           >
             <div class="snapshot__weight">
               <div class="snapshot__subtitle">Current Avg</div>
@@ -125,11 +143,20 @@
             <div class="snapshot__placeholder"></div>
             <div class="snapshot__compare" #snapshotMuscle>
               <div class="snapshot__subtitle">Change</div>
-              <div class="snapshot__value">
+              <div
+                class="snapshot__value"
+                *ngIf="progressDisplay.isComparisonMuscleFound"
+              >
                 {{ progressDisplay.muscleChange | number : "1.1-2" }}
-                <span class="snapshot__units">{{
-                  progressDisplay.unitAbbrev
-                }}</span>
+                <span class="snapshot__units">
+                  {{ progressDisplay.unitAbbrev }}</span
+                >
+              </div>
+              <div
+                class="snapshot__value"
+                *ngIf="!progressDisplay.isComparisonMuscleFound"
+              >
+                Keep Logging!
               </div>
             </div>
           </ion-card-content>

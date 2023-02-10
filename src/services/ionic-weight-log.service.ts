@@ -11,6 +11,7 @@ import {
   of,
   ReplaySubject,
   switchMap,
+  tap,
 } from 'rxjs';
 
 import * as CordovaSQLiteDriver from 'localforage-cordovasqlitedriver';
@@ -92,6 +93,12 @@ export class IonicWeightLogService {
   public async insertWeightLogEntry(value: WeightLogId) {
     const storedData: WeightLogId[] =
       (await this.storage.get(WeightLogStorage.WeightLog)) || [];
+    // if (!value) {
+    //   delete value.muscleAmount;
+    // }
+    // if (!value.fatAmount) {
+    //   delete value.fatAmount;
+    // }
     storedData.push(value);
     await this.storage.set(WeightLogStorage.WeightLog, storedData);
     this.loadWeightLog();
@@ -129,10 +136,10 @@ export class IonicWeightLogService {
       from(this.storage.get(WeightLogStorage.Settings)),
     ])
       .pipe(
-        map(([dbReady, settings]) => {
+        tap(([dbReady, settings]) => {
           if (dbReady) {
-            this._userSettings$.next(settings);
             if (settings) {
+              this._userSettings$.next(settings);
               this.isUserSetup.next(true);
             } else {
               this.isUserSetup.next(false);
@@ -159,7 +166,8 @@ export class IonicWeightLogService {
           if (dbReady) {
             if (!log) {
               // TODO: Remove this before Production
-              this.seedWeightLog();
+              this._weightLog$.next([]);
+              // this.seedWeightLog();
             } else {
               this._weightLog$.next(
                 log.sort(

@@ -28,6 +28,9 @@ export class WeekProgressComponent implements OnInit {
   @Input() profilePicUrl: string;
   @Input() isFatLogger: boolean;
   @Input() isMuscleLogger: boolean;
+  @Input() isCurrentWeightPeriodRecorded: boolean;
+  @Input() isCurrentFatPeriodRecorded: boolean;
+  @Input() isCurrentMusclePeriodRecorded: boolean;
 
   @Output() comparisonPeriodChanged = new EventEmitter<number>();
 
@@ -69,16 +72,18 @@ export class WeekProgressComponent implements OnInit {
   }
 
   playAnimation() {
-    this.animationCtrl
-      .create('loading-animation')
-      .addElement(this.snapshotWeight.nativeElement)
-      .duration(500)
-      .iterations(1)
-      .fromTo('transform', 'translateY(20px)', 'translateY(0px)')
-      .fromTo('opacity', '0.2', '1')
-      .play();
+    if (this.isCurrentWeightPeriodRecorded) {
+      this.animationCtrl
+        .create('loading-animation')
+        .addElement(this.snapshotWeight.nativeElement)
+        .duration(500)
+        .iterations(1)
+        .fromTo('transform', 'translateY(20px)', 'translateY(0px)')
+        .fromTo('opacity', '0.2', '1')
+        .play();
+    }
 
-    if (this.isFatLogger) {
+    if (this.isFatLogger && this.isCurrentFatPeriodRecorded) {
       this.animationCtrl
         .create('loading-animation')
         .addElement(this.snapshotFat.nativeElement)
@@ -88,7 +93,7 @@ export class WeekProgressComponent implements OnInit {
         .fromTo('opacity', '0.2', '1')
         .play();
     }
-    if (this.isMuscleLogger) {
+    if (this.isMuscleLogger && this.isCurrentMusclePeriodRecorded) {
       this.animationCtrl
         .create('loading-animation')
         .addElement(this.snapshotMuscle.nativeElement)
@@ -118,11 +123,14 @@ enum ProgressPeriod {
 
 export interface ProgressDisplay {
   weight: number;
-  weightChange: number;
+  weightChange?: number;
   fat?: number;
   fatChange?: number;
   muscle?: number;
   muscleChange?: number;
   unitAbbrev: string;
   name: string;
+  isComparisonWeightFound: boolean;
+  isComparisonMuscleFound: boolean;
+  isComparisonFatFound: boolean;
 }

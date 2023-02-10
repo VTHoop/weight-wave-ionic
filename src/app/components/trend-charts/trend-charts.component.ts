@@ -26,22 +26,38 @@ export class TrendChartsComponent implements OnInit {
   selectedChartSpan = ChartSpan.Month;
   public ChartSpan: any = ChartSpan;
 
-  plugin = {
-    id: 'customCanvasBackgroundColor',
-    beforeDraw: (chart, args, options) => {
-      const { ctx } = chart;
-      ctx.save();
-      ctx.globalCompositeOperation = 'destination-over';
-      ctx.fillStyle = options.color || '#99ffff';
-      ctx.fillRect(0, 0, chart.width, chart.height);
-      ctx.restore();
+  plugins = [
+    {
+      id: 'customCanvasBackgroundColor',
+      beforeDraw: (chart, args, options) => {
+        const { ctx } = chart;
+        ctx.save();
+        ctx.globalCompositeOperation = 'destination-over';
+        ctx.fillStyle = options.color || '#99ffff';
+        ctx.fillRect(0, 0, chart.width, chart.height);
+        ctx.restore();
+      },
     },
-  };
+    {
+      afterDraw: function (chart) {
+        if (chart.data.datasets[0].data.length < 1) {
+          let ctx = chart.ctx;
+          let width = chart.width;
+          let height = chart.height;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillStyle = '#fff';
+          ctx.font = '30px Roboto';
+          ctx.fillText('Coming Soon!', width / 2, height / 2);
+          ctx.restore();
+        }
+      },
+    },
+  ];
 
-  constructor(private ionicWeightLogService: IonicWeightLogService) {}
+  constructor() {}
 
   ngOnInit(): void {
-    this.settings$ = this.ionicWeightLogService.settings$;
     this.createCharts();
   }
 
@@ -68,33 +84,25 @@ export class TrendChartsComponent implements OnInit {
         .pipe(
           tap((chartData) => {
             const { labels, weightValues, fatValues, muscleValues } = chartData;
-            if (chartData.labels.length) {
-              this.resetCharts();
+            this.resetCharts();
 
-              this.createChart(
-                'weight-chart',
-                labels,
-                weightValues,
-                'Overall Weight',
-                '#3d535c'
-              );
+            this.createChart(
+              'weight-chart',
+              labels,
+              weightValues,
+              'Overall Weight',
+              '#3d535c'
+            );
 
-              this.createChart(
-                'fat-chart',
-                labels,
-                fatValues,
-                'Fat',
-                '#9fb992'
-              );
+            this.createChart('fat-chart', labels, fatValues, 'Fat', '#9fb992');
 
-              this.createChart(
-                'muscle-chart',
-                labels,
-                muscleValues,
-                'Muscle',
-                '#6d8dab'
-              );
-            }
+            this.createChart(
+              'muscle-chart',
+              labels,
+              muscleValues,
+              'Muscle',
+              '#6d8dab'
+            );
           })
         )
         .subscribe()
@@ -113,7 +121,7 @@ export class TrendChartsComponent implements OnInit {
         backgroundColor: '#ffffff',
         borderColor: '#ffffff',
         tension: 0.5,
-        pointRadius: 1,
+        pointRadius: 2,
       },
     ],
   });
@@ -140,13 +148,14 @@ export class TrendChartsComponent implements OnInit {
   ): void => {
     //@ts-ignore
     const nonNullValues: number[] = values.filter((value) => value !== null);
+
     new Chart(
       //@ts-ignore
       document.getElementById(name),
       {
         type: 'line',
         data: this.getChartDataAttributes(labels, values),
-        plugins: [this.plugin],
+        plugins: this.plugins,
         options: {
           plugins: {
             title: {
@@ -167,30 +176,47 @@ export class TrendChartsComponent implements OnInit {
             },
           },
           layout: {
-            padding: 20,
+            padding: {
+              left: 20,
+              right: 20,
+              top: 10,
+              bottom: 10,
+            },
           },
           responsive: true,
+          maintainAspectRatio: false,
           scales: {
             y: {
-              min: Math.floor(Math.min(...nonNullValues)),
-              max: Math.ceil(Math.max(...nonNullValues)),
+              min: Math.floor(Math.min(...nonNullValues)) - 1,
+              max: Math.ceil(Math.max(...nonNullValues)) + 1,
               ticks: {
                 color: 'white',
               },
             },
             x: {
               border: {
-                display: false,
+                display: true,
               },
               grid: {
-                display: false,
-                drawOnChartArea: false,
-                drawTicks: false,
+                display: true,
+                drawOnChartArea: true,
+                drawTicks: true,
               },
               ticks: {
+                maxTicksLimit: 6,
                 callback: function (val, index) {
-                  // Hide every 2nd tick label
-                  index % 5 === 0 ? this.getLabelForValue(+val) : '';
+                  const dateVal = new Date(this.getLabelForValue(+val));
+                  if (
+                    dateVal.getTime() ===
+                    new Date(
+                      dateVal.getFullYear(),
+                      dateVal.getMonth(),
+                      1
+                    ).getTime()
+                  ) {
+                    return dateVal.toLocaleString('en-US', { month: 'short' });
+                  }
+                  return undefined;
                 },
                 color: 'white',
                 minRotation: 0,
