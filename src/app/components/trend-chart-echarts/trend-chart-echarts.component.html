@@ -1,0 +1,38 @@
+<div class="trends container">
+  <div class="trends__header">
+    <ion-text>
+      <h3>Over Time</h3>
+    </ion-text>
+  </div>
+  <div class="trends__filter">
+    <div
+      (click)="changeFilter(ChartSpan.Month)"
+      [ngClass]="{ selected: selectedChartSpan === ChartSpan.Month }"
+    >
+      Month
+    </div>
+    <div
+      (click)="changeFilter(ChartSpan.Quarter)"
+      [ngClass]="{ selected: selectedChartSpan === ChartSpan.Quarter }"
+    >
+      Quarter
+    </div>
+    <div
+      (click)="changeFilter(ChartSpan.Year)"
+      [ngClass]="{ selected: selectedChartSpan === ChartSpan.Year }"
+    >
+      Year
+    </div>
+  </div>
+  <div class="trends__charts">
+    <div>
+      <div echarts [options]="weightChartOptions" class="demo-chart"></div>
+    </div>
+    <div [ngClass]="{ 'hide-chart': !isFatLogger }">
+      <div echarts [options]="fatChartOptions" class="demo-chart"></div>
+    </div>
+    <div [ngClass]="{ 'hide-chart': !isMuscleLogger }">
+      <div echarts [options]="muscleChartOptions" class="demo-chart"></div>
+    </div>
+  </div>
+</div>

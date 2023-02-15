@@ -7,6 +7,7 @@ import { DashboardPage } from './dashboard.page';
 import { DashboardPageRoutingModule } from './dashboard-tab-routing.module';
 import { WeekProgressComponentModule } from '../../components/week-progress/week-progress.module';
 import { TrendChartsComponentModule } from '../../components/trend-charts/trend-charts.module';
+import { TrendChartsEChartsComponentModule } from 'src/app/components/trend-chart-echarts/trend-charts.module';
 
 @NgModule({
   imports: [
@@ -15,6 +16,7 @@ import { TrendChartsComponentModule } from '../../components/trend-charts/trend-
     FormsModule,
     WeekProgressComponentModule,
     TrendChartsComponentModule,
+    TrendChartsEChartsComponentModule,
     DashboardPageRoutingModule,
   ],
   declarations: [DashboardPage],

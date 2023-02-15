@@ -9,10 +9,10 @@
     [isCurrentMusclePeriodRecorded]="isCurrentMusclePeriodRecorded"
     (comparisonPeriodChanged)="onSummaryPeriodChanged($event)"
   ></app-week-progress>
-  <app-trend-charts
+  <app-trend-chart-echarts
     [chartData$]="chartData$"
     [isFatLogger]="isFatLogger"
     [isMuscleLogger]="isMuscleLogger"
     (comparisonPeriodChanged)="onChartPeriodChanged($event)"
-  ></app-trend-charts>
+  ></app-trend-chart-echarts>
 </ion-content>

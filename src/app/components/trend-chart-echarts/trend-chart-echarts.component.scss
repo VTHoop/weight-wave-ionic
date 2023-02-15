@@ -1,0 +1,35 @@
+.trends {
+  h2 {
+      text-align: left;
+  }
+  h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-top: 0;
+  }
+  &__header {
+      padding: 0 20px;
+  }
+  &__filter{
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      & > * {
+          cursor: pointer;
+      }
+  }
+  &__charts {
+      & > * {
+          margin-bottom: 20px;
+      }
+  }
+}
+
+.selected {
+  border-bottom: solid var(--ion-color-secondary) 4px;
+  padding-bottom: 4px;
+}
+
+.hide-chart {
+display: none;
+}
