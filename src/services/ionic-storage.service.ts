@@ -29,7 +29,7 @@ import {
 @Injectable({
   providedIn: 'root',
 })
-export class IonicWeightLogService {
+export class IonicStorageService {
   public storageReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public isUserSetup = new ReplaySubject<boolean>(1);
   private _userSettings$ = new ReplaySubject<Settings>(1);
@@ -195,6 +195,7 @@ export class IonicWeightLogService {
 export enum WeightLogStorage {
   Settings = 'settings',
   WeightLog = 'weightLog',
+  MacroLog = 'macroLog',
 }
 
 export interface Settings {

@@ -2,10 +2,7 @@ import { DatePipe } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Chart } from 'chart.js/auto';
 import { Subscription, BehaviorSubject, Observable, tap } from 'rxjs';
-import {
-  IonicWeightLogService,
-  Settings,
-} from 'src/services/ionic-weight-log.service';
+import { Settings } from 'src/services/ionic-storage.service';
 
 @Component({
   selector: 'app-trend-charts',

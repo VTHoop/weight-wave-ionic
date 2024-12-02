@@ -11,7 +11,7 @@ import { AverageWeight } from 'src/models/models/weight-log.model';
 import { Observable } from 'rxjs';
 import { MovingAverageService } from 'src/services/moving-average.service';
 import { AnimationController } from '@ionic/angular';
-import { IonicWeightLogService } from 'src/services/ionic-weight-log.service';
+import { IonicStorageService } from 'src/services/ionic-storage.service';
 import { Camera, CameraSource, CameraResultType } from '@capacitor/camera';
 
 @Component({
@@ -40,7 +40,7 @@ export class WeekProgressComponent implements OnInit {
 
   constructor(
     public movingAverageService: MovingAverageService,
-    public ionicWeightLogService: IonicWeightLogService,
+    public ionicStorageService: IonicStorageService,
     private animationCtrl: AnimationController
   ) {}
 
@@ -112,7 +112,7 @@ export class WeekProgressComponent implements OnInit {
       correctOrientation: true,
       resultType: CameraResultType.Uri,
     });
-    this.ionicWeightLogService.saveProfilePic(image.webPath);
+    this.ionicStorageService.saveProfilePic(image.webPath);
   }
 }
 

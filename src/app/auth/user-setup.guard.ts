@@ -1,10 +1,10 @@
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { map } from 'rxjs';
-import { IonicWeightLogService } from 'src/services/ionic-weight-log.service';
+import { IonicStorageService } from 'src/services/ionic-storage.service';
 
 export const userSetupGuard = () => {
-  const weightLogService = inject(IonicWeightLogService);
+  const weightLogService = inject(IonicStorageService);
   const router = inject(Router);
 
   return weightLogService.isUserSetup

@@ -12,9 +12,9 @@ import { PluginListenerHandle } from '@capacitor/core';
 import { Observable, of, ReplaySubject } from 'rxjs';
 import { WeightLogId } from 'src/models/models/weight-log.model';
 import {
-  IonicWeightLogService,
+  IonicStorageService,
   Settings,
-} from 'src/services/ionic-weight-log.service';
+} from 'src/services/ionic-storage.service';
 import { WeightEntryModalComponent } from '../components/weight-entry-modal/weight-entry-modal.component';
 
 @Component({
@@ -50,7 +50,7 @@ export class TabsPage implements OnInit {
   userSettings$: Observable<Settings>;
 
   constructor(
-    private ionicWeightLogService: IonicWeightLogService,
+    private ionicStorageService: IonicStorageService,
     private readonly ngZone: NgZone
   ) {}
 
@@ -92,7 +92,7 @@ export class TabsPage implements OnInit {
   }
 
   ngOnInit(): void {
-    this.userSettings$ = this.ionicWeightLogService.settings$;
+    this.userSettings$ = this.ionicStorageService.settings$;
     // this.todaysLog$ = this.weightLogService.weightLog$.pipe(
     //   map((log) => {
     //     const today = new Date();

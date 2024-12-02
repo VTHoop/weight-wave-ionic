@@ -13,10 +13,10 @@ import { ChartData } from 'src/app/components/trend-charts/trend-charts.componen
 import { ProgressDisplay } from 'src/app/components/week-progress/week-progress.component';
 import { AverageWeight } from 'src/models/models/weight-log.model';
 import {
-  IonicWeightLogService,
+  IonicStorageService,
   Settings,
   weightMetrics,
-} from 'src/services/ionic-weight-log.service';
+} from 'src/services/ionic-storage.service';
 import { MovingAverageService } from 'src/services/moving-average.service';
 @Component({
   selector: 'dashboard-tab',
@@ -46,7 +46,7 @@ export class DashboardPage implements OnInit, OnDestroy {
   isLoading$ = new BehaviorSubject(true);
 
   constructor(
-    private weightLogService: IonicWeightLogService,
+    private ionicStorageService: IonicStorageService,
     private movingAverageService: MovingAverageService,
     private loadingCtrl: LoadingController,
     private dateformat: DatePipe
@@ -62,9 +62,9 @@ export class DashboardPage implements OnInit, OnDestroy {
 
   private getProgressDisplayData(): Observable<ProgressDisplay> {
     return combineLatest([
-      this.weightLogService.weightLog$,
+      this.ionicStorageService.weightLog$,
       this.weeksToCompare$,
-      this.weightLogService.settings$,
+      this.ionicStorageService.settings$,
     ]).pipe(
       map(([log, weeksToCompare, settings]) => {
         this.selectedImage = settings.profilePicUrl
@@ -139,9 +139,9 @@ export class DashboardPage implements OnInit, OnDestroy {
 
   private getChartData(): Observable<ChartData> {
     return combineLatest([
-      this.weightLogService.avgWeightLog$,
+      this.ionicStorageService.avgWeightLog$,
       this.daysToShow$,
-      this.weightLogService.settings$,
+      this.ionicStorageService.settings$,
     ]).pipe(
       map(([log, daysToShow, settings]) => {
         if (!log.allAverages.length) {

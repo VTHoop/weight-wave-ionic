@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { AverageWeight } from 'src/models/models/weight-log.model';
 import {
-  IonicWeightLogService,
+  IonicStorageService,
   Settings,
-} from 'src/services/ionic-weight-log.service';
+} from 'src/services/ionic-storage.service';
 
 @Component({
   selector: 'app-achievements-tab',
@@ -15,12 +15,12 @@ export class AchievementsPage implements OnInit {
   lowestWeightAverage$: Observable<AverageWeight>;
   userSettings$: Observable<Settings>;
 
-  constructor(private weightLogService: IonicWeightLogService) {}
+  constructor(private ionicStorageService: IonicStorageService) {}
 
   ngOnInit(): void {
-    this.lowestWeightAverage$ = this.weightLogService.avgWeightLog$.pipe(
+    this.lowestWeightAverage$ = this.ionicStorageService.avgWeightLog$.pipe(
       map((log) => log.lowestWeightAverage)
     );
-    this.userSettings$ = this.weightLogService.settings$;
+    this.userSettings$ = this.ionicStorageService.settings$;
   }
 }

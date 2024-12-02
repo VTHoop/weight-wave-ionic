@@ -9,9 +9,9 @@ import {
   Validators,
 } from '@angular/forms';
 import {
-  IonicWeightLogService,
+  IonicStorageService,
   Settings,
-} from 'src/services/ionic-weight-log.service';
+} from 'src/services/ionic-storage.service';
 import { WeightUnitDisplay } from 'src/models/enums/weight-unit.enum';
 import { Router } from '@angular/router';
 
@@ -37,7 +37,7 @@ export class IntroSwiperComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private ionicWeightLogService: IonicWeightLogService
+    private ionicStorageService: IonicStorageService
   ) {}
 
   ngOnInit() {
@@ -63,7 +63,7 @@ export class IntroSwiperComponent implements OnInit {
       isLoggingMuscle: formValue.isLoggingMuscle,
       isLoggingFat: formValue.isLoggingFat,
     } as Settings;
-    await this.ionicWeightLogService.saveSettings(settings);
+    await this.ionicStorageService.saveSettings(settings);
     await this.router.navigateByUrl('');
   }
 }

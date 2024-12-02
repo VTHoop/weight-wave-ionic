@@ -9,9 +9,9 @@ import { ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { WeightUnitDisplay } from 'src/models/enums/weight-unit.enum';
 import {
-  IonicWeightLogService,
+  IonicStorageService,
   Settings,
-} from 'src/services/ionic-weight-log.service';
+} from 'src/services/ionic-storage.service';
 
 @Component({
   selector: 'app-settings-tab',
@@ -25,7 +25,7 @@ export class SettingsPage implements OnInit, OnDestroy {
 
   constructor(
     private fb: FormBuilder,
-    private ionicWeightLogService: IonicWeightLogService,
+    private ionicStorageService: IonicStorageService,
     private toastController: ToastController
   ) {}
 
@@ -44,7 +44,7 @@ export class SettingsPage implements OnInit, OnDestroy {
       isLoggingFat: new FormControl(false, Validators.required),
     });
     this.openSubscriptions.push(
-      this.ionicWeightLogService.settings$.subscribe((settings) => {
+      this.ionicStorageService.settings$.subscribe((settings) => {
         this.profileForm.patchValue(settings);
       })
     );
@@ -57,7 +57,7 @@ export class SettingsPage implements OnInit, OnDestroy {
       isLoggingMuscle: formValue.isLoggingMuscle,
       isLoggingFat: formValue.isLoggingFat,
     } as Settings;
-    await this.ionicWeightLogService.saveSettings(settings);
+    await this.ionicStorageService.saveSettings(settings);
     const toast = await this.toastController.create({
       message: 'Settings Updated',
       duration: 1500,

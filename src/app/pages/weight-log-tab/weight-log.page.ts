@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { combineLatest, map, Observable } from 'rxjs';
 import {
-  IonicWeightLogService,
+  IonicStorageService,
   Settings,
   weightMetrics,
-} from 'src/services/ionic-weight-log.service';
+} from 'src/services/ionic-storage.service';
 
 @Component({
   selector: 'weight-log-tab',
@@ -15,14 +15,14 @@ export class WeightLogPage implements OnInit {
   weightLogDisplay$: Observable<WeightLogDisplay[]>;
   settings$: Observable<Settings>;
 
-  constructor(private ionicWeightLogService: IonicWeightLogService) {}
+  constructor(private ionicStorageService: IonicStorageService) {}
 
   ngOnInit(): void {
-    this.settings$ = this.ionicWeightLogService.settings$;
+    this.settings$ = this.ionicStorageService.settings$;
 
     this.weightLogDisplay$ = combineLatest([
-      this.ionicWeightLogService.settings$,
-      this.ionicWeightLogService.weightLog$,
+      this.ionicStorageService.settings$,
+      this.ionicStorageService.weightLog$,
     ]).pipe(
       map(([settings, log]) =>
         log

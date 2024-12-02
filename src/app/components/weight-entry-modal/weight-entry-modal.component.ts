@@ -9,10 +9,10 @@ import {
 import { WeightUnitDisplay } from 'src/models/enums/weight-unit.enum';
 import { WeightLog, WeightLogId } from 'src/models/models/weight-log.model';
 import {
-  IonicWeightLogService,
+  IonicStorageService,
   Settings,
   weightMetrics,
-} from 'src/services/ionic-weight-log.service';
+} from 'src/services/ionic-storage.service';
 import { UnitConversionService } from 'src/services/unit-conversion.service';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -29,7 +29,7 @@ export class WeightEntryModalComponent implements OnInit {
   constructor(
     private datePipe: DatePipe,
     private fb: FormBuilder,
-    private ionicWeightLogService: IonicWeightLogService,
+    private ionicStorageService: IonicStorageService,
     private weightConversionService: UnitConversionService
   ) {}
 
@@ -90,7 +90,7 @@ export class WeightEntryModalComponent implements OnInit {
         this.userSettings.weightMetricDisplay
       ),
     };
-    this.ionicWeightLogService.insertWeightLogEntry(newWeightLog);
+    this.ionicStorageService.insertWeightLogEntry(newWeightLog);
     this.weightEntryForm.reset();
     this.setOpen(false);
   }

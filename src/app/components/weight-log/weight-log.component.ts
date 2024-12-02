@@ -8,10 +8,10 @@ import {
 import { WeightLogDisplay } from 'src/app/pages/weight-log-tab/weight-log.page';
 import { WeightLogId } from 'src/models/models/weight-log.model';
 import {
-  IonicWeightLogService,
+  IonicStorageService,
   Settings,
   weightMetrics,
-} from 'src/services/ionic-weight-log.service';
+} from 'src/services/ionic-storage.service';
 import { UnitConversionService } from 'src/services/unit-conversion.service';
 
 @Component({
@@ -31,7 +31,7 @@ export class WeightLogComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private ionicWeightLogService: IonicWeightLogService,
+    private ionicStorageService: IonicStorageService,
     private weightConversionService: UnitConversionService
   ) {}
 
@@ -133,13 +133,13 @@ export class WeightLogComponent implements OnInit {
           : this.weightConversionService.poundsToKilograms(+value.fat),
     };
 
-    this.ionicWeightLogService.updateWeightLogEntry(newWeightLog);
+    this.ionicStorageService.updateWeightLogEntry(newWeightLog);
     this.weightEditForm.reset();
     this.isOpen = false;
   }
 
   deleteEntry() {
-    this.ionicWeightLogService.deleteWeightLogEntry(this.selectedDoc.id);
+    this.ionicStorageService.deleteWeightLogEntry(this.selectedDoc.id);
     this.isOpen = false;
   }
 }
