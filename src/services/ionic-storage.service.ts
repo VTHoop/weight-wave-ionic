@@ -25,6 +25,7 @@ import {
   MovingAverageData,
   MovingAverageService,
 } from './moving-average.service';
+import { MacroLogId } from 'src/models/models/macro-log-model';
 
 @Injectable({
   providedIn: 'root',
@@ -34,6 +35,7 @@ export class IonicStorageService {
   public isUserSetup = new ReplaySubject<boolean>(1);
   private _userSettings$ = new ReplaySubject<Settings>(1);
   private _weightLog$ = new ReplaySubject<WeightLogId[]>(1);
+  private _macroLog$ = new ReplaySubject<MacroLogId[]>(1);
   private _avgWeightLog$ = new ReplaySubject<MovingAverageData>(1);
 
   constructor(
@@ -50,6 +52,7 @@ export class IonicStorageService {
     this.loadSettings();
     this.loadWeightLog();
     this.loadAverageWeightLog();
+    this.loadMacroLog();
   }
 
   loadAverageWeightLog() {
@@ -88,6 +91,23 @@ export class IonicStorageService {
 
   get avgWeightLog$() {
     return this._avgWeightLog$.asObservable();
+  }
+
+  get macroLog$() {
+    return this._macroLog$.asObservable();
+  }
+
+  public async upsertMacroLogEntry(value: MacroLogId) {
+    const storedData: MacroLogId[] =
+      (await this.storage.get(WeightLogStorage.MacroLog)) || [];
+    const entryIndex = storedData.findIndex((entry) => entry.id === value.id);
+    if (entryIndex !== -1) {
+      storedData[entryIndex] = value;
+    } else {
+      storedData.push(value);
+    }
+    await this.storage.set(WeightLogStorage.MacroLog, storedData);
+    this.loadMacroLog();
   }
 
   public async insertWeightLogEntry(value: WeightLogId) {
@@ -175,6 +195,34 @@ export class IonicStorageService {
                     a,
                     b //@ts-ignore
                   ) => new Date(a.weightDate) - new Date(b.weightDate)
+                )
+              );
+            }
+          }
+        })
+      )
+      .subscribe();
+  }
+
+  private loadMacroLog(): void {
+    combineLatest([
+      this.storageReady,
+      from(this.storage.get(WeightLogStorage.MacroLog)),
+    ])
+      .pipe(
+        map(([dbReady, log]: [boolean, MacroLogId[]]) => {
+          if (dbReady) {
+            if (!log) {
+              // TODO: Remove this before Production
+              this._macroLog$.next([]);
+              // this.seedWeightLog();
+            } else {
+              this._macroLog$.next(
+                log.sort(
+                  (
+                    a,
+                    b //@ts-ignore
+                  ) => new Date(a.logDate) - new Date(b.logDate)
                 )
               );
             }

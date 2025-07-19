@@ -11,7 +11,7 @@ ion-range::part(pin) {
   align-items: center;
   justify-content: center;
 
-  background: #ffafcc;
+  background: var(--ion-color-secondary);
   color: #fff;
 
   border-radius: 50%;
@@ -29,7 +29,7 @@ ion-range::part(pin)::before {
 }
 
 ion-range::part(knob) {
-  background: #ffc8dd;
+  background: var(--ion-color-secondary);
 }
 
 ion-range::part(bar) {
@@ -38,4 +38,20 @@ ion-range::part(bar) {
 
 ion-range::part(bar-active) {
   background: #bde0fe;
+}
+
+.macro-tracker {
+  &__buttons {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: -1rem;
+  }
+
+  &__button {
+    height: 1.2rem;
+    width: 1.2rem;
+  }
 }

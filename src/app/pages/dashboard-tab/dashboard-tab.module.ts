@@ -8,7 +8,6 @@ import { DashboardPageRoutingModule } from './dashboard-tab-routing.module';
 import { WeekProgressComponentModule } from '../../components/week-progress/week-progress.module';
 import { TrendChartsComponentModule } from '../../components/trend-charts/trend-charts.module';
 import { TrendChartsEChartsComponentModule } from 'src/app/components/trend-chart-echarts/trend-charts.module';
-import { MacroTrackerModule } from '../../components/macro-tracker/macro-tracker.module';
 
 @NgModule({
   imports: [
@@ -19,7 +18,6 @@ import { MacroTrackerModule } from '../../components/macro-tracker/macro-tracker
     TrendChartsComponentModule,
     TrendChartsEChartsComponentModule,
     DashboardPageRoutingModule,
-    MacroTrackerModule,
   ],
   declarations: [DashboardPage],
 })

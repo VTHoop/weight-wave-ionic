@@ -5,23 +5,35 @@
     [ticks]="true"
     [snaps]="true"
     [min]="0"
-    [max]="20"
+    [max]="10"
     [step]="0.5"
     [pin]="true"
     [pinFormatter]="pinFormatter"
+    [value]="todaysMacros?.pnProtein"
+    (ionChange)="onProteinChange($event)"
   >
     ></ion-range
   >
+  <!-- <ion-fab class="macro-tracker__buttons">
+    <ion-fab-button class="macro-tracker__button">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-button class="macro-tracker__button">
+      <ion-icon name="remove"></ion-icon>
+    </ion-fab-button>
+  </ion-fab> -->
   <h4>Fat</h4>
   <ion-range
     aria-label="Range with ticks"
     [ticks]="true"
     [snaps]="true"
     [min]="0"
-    [max]="20"
+    [max]="10"
     [step]="0.5"
     [pin]="true"
     [pinFormatter]="pinFormatter"
+    [value]="todaysMacros?.pnFat"
+    (ionChange)="onFatChange($event)"
   >
     ></ion-range
   >
@@ -31,11 +43,29 @@
     [ticks]="true"
     [snaps]="true"
     [min]="0"
-    [max]="20"
+    [max]="10"
     [step]="0.5"
     [pin]="true"
     [pinFormatter]="pinFormatter"
+    [value]="todaysMacros?.pnCarbs"
+    (ionChange)="onCarbChange($event)"
   >
     ></ion-range
   >
+  <h4>Alcohol</h4>
+  <ion-range
+    aria-label="Range with ticks"
+    [ticks]="true"
+    [snaps]="true"
+    [min]="0"
+    [max]="6"
+    [step]="0.5"
+    [pin]="true"
+    [pinFormatter]="pinFormatter"
+    [value]="todaysMacros?.pnAlcohol"
+    (ionChange)="onAlcoholChange($event)"
+  >
+    ></ion-range
+  >
+  <div class="calories">Total Calories: {{ caloriesToday }}</div>
 </div>
