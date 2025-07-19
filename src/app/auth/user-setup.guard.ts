@@ -7,14 +7,12 @@ export const userSetupGuard = () => {
   const weightLogService = inject(IonicStorageService);
   const router = inject(Router);
 
-  return weightLogService.isUserSetup
-    .pipe(
-      map((isUserSetup) => {
-        if (isUserSetup) {
-          return true;
-        }
-        return router.navigateByUrl('app-intro');
-      })
-    )
-    .subscribe();
+  return weightLogService.isUserSetup.pipe(
+    map((isUserSetup) => {
+      if (isUserSetup) {
+        return true;
+      }
+      return router.navigateByUrl('app-intro');
+    })
+  );
 };

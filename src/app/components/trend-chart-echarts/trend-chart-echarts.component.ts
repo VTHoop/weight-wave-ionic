@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, OnDestroy, Output } from '@angular/core';
 import { EChartsOption } from 'echarts';
 import { Observable, Subscription, tap } from 'rxjs';
 import { ChartData } from '../trend-charts/trend-charts.component';
@@ -8,7 +8,7 @@ import { ChartData } from '../trend-charts/trend-charts.component';
   templateUrl: './trend-chart-echarts.component.html',
   styleUrls: ['./trend-chart-echarts.component.scss'],
 })
-export class TrendChartEchartsComponent implements OnInit {
+export class TrendChartEchartsComponent implements OnInit, OnDestroy {
   openSubscriptions: Subscription[] = [];
 
   selectedChartSpan = ChartSpan.Month;
@@ -145,6 +145,12 @@ export class TrendChartEchartsComponent implements OnInit {
       ],
     };
   };
+
+  ngOnDestroy(): void {
+    this.openSubscriptions.forEach((subscription) =>
+      subscription.unsubscribe()
+    );
+  }
 }
 
 enum ChartSpan {
