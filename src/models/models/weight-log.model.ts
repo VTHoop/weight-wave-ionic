@@ -1,6 +1,3 @@
-import firebase from 'firebase/compat';
-import Timestamp = firebase.firestore.Timestamp;
-
 export interface WeightLog {
   weightDate: Date;
   creationDate: Date;
@@ -13,18 +10,6 @@ export interface WeightLog {
 }
 
 export interface WeightLogId extends WeightLog {
-  id: string;
-}
-
-export interface WeightLogResponse {
-  weightDate: Timestamp;
-  creationDate: Timestamp;
-  weightAmount: number;
-  muscleAmount?: number;
-  fatAmount?: number;
-}
-
-export interface WeightLogResponseId extends WeightLogResponse {
   id: string;
 }
 
