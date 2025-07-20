@@ -2,50 +2,158 @@
   <ng-template>
     <ion-header>
       <ion-toolbar>
-        <ion-title>Add New Weight Entry</ion-title>
+        <ion-title>Add Weight Entry</ion-title>
         <ion-buttons slot="end">
-          <ion-button (click)="setOpen(false)">Close</ion-button>
+          <ion-button (click)="setOpen(false)" fill="clear">
+            <ion-icon name="close"></ion-icon>
+          </ion-button>
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
-    <ion-content class="ion-padding">
+    <ion-content
+      class="ion-padding weight-entry-content"
+      scrollY="true"
+      [scrollEvents]="true"
+    >
       <form
         [formGroup]="weightEntryForm"
         (ngSubmit)="onSubmit(weightEntryForm.value)"
+        (keydown.enter)="onEnterKey()"
       >
-        <ion-datetime formControlName="weightDate">
-          <span slot="title">Choose the Date You Logged This Weight</span>
-        </ion-datetime>
-        <ion-item>
-          <ion-label>Weight</ion-label>
-          <ion-input
-            type="text"
-            inputmode="numeric"
-            formControlName="weightAmount"
-          ></ion-input>
-        </ion-item>
-        <ion-item>
-          <ion-label>Fat</ion-label>
-          <ion-input
-            type="text"
-            inputmode="numeric"
-            formControlName="fatAmount"
-          ></ion-input>
-        </ion-item>
-        <ion-item>
-          <ion-label>Muscle</ion-label>
-          <ion-input
-            type="text"
-            inputmode="numeric"
-            formControlName="muscleAmount"
-          ></ion-input>
-        </ion-item>
-        <ion-button
-          type="submit"
-          [disabled]="!(weightEntryForm.valid && weightEntryForm.dirty)"
-        >
-          Submit
-        </ion-button>
+        <!-- Date Section -->
+        <div class="date-section">
+          <ion-label class="section-label">Date ({{ weightEntryForm.get('weightDate')?.value | date:'MMM d, y' }})</ion-label>
+          <div class="date-controls">
+            <ion-datetime
+              formControlName="weightDate"
+              presentation="date"
+              fill="outline"
+              class="date-picker"
+            >
+            </ion-datetime>
+            <ion-button
+              (click)="setToday()"
+              fill="outline"
+              size="small"
+              class="today-button"
+            >
+              Today
+            </ion-button>
+          </div>
+        </div>
+
+        <!-- Weight Section -->
+        <div class="weight-section">
+          <ion-label class="section-label required">Weight</ion-label>
+          <ion-item
+            lines="none"
+            class="input-item weight-input-item"
+            [class.item-has-error]="shouldShowError('weight', 'weightAmount')"
+          >
+            <ion-input
+              #weightInput
+              type="number"
+              step="0.1"
+              min="0"
+              max="1000"
+              formControlName="weightAmount"
+              [placeholder]="getWeightPlaceholder()"
+              clearInput="true"
+              aria-label="Weight amount"
+              (ionFocus)="onInputFocus($event)"
+              (ionInput)="onFieldInput('weight')"
+            ></ion-input>
+            <ion-note slot="end" class="unit-label">{{
+              getUnitAbbrev()
+            }}</ion-note>
+          </ion-item>
+          <ion-note
+            *ngIf="shouldShowError('weight', 'weightAmount')"
+            class="error-message"
+          >
+            Please enter a valid weight
+          </ion-note>
+        </div>
+
+        <!-- Fat Section -->
+        <div class="fat-section" *ngIf="userSettings?.isLoggingFat">
+          <ion-label class="section-label">Fat</ion-label>
+          <ion-item
+            lines="none"
+            class="input-item body-comp-item"
+            [class.item-has-error]="shouldShowError('fat', 'fatAmount')"
+          >
+            <ion-input
+              #fatInput
+              type="number"
+              step="0.1"
+              min="0"
+              max="1000"
+              formControlName="fatAmount"
+              [placeholder]="getFatPlaceholder()"
+              clearInput="true"
+              aria-label="Fat amount"
+              (ionFocus)="onInputFocus($event)"
+              (ionInput)="onFieldInput('fat')"
+            ></ion-input>
+            <ion-note slot="end" class="unit-label">{{
+              getUnitAbbrev()
+            }}</ion-note>
+          </ion-item>
+          <ion-note
+            *ngIf="shouldShowError('fat', 'fatAmount')"
+            class="error-message"
+          >
+            Please enter a valid fat amount
+          </ion-note>
+        </div>
+
+        <!-- Muscle Section -->
+        <div class="muscle-section" *ngIf="userSettings?.isLoggingMuscle">
+          <ion-label class="section-label">Muscle</ion-label>
+          <ion-item
+            lines="none"
+            class="input-item body-comp-item"
+            [class.item-has-error]="shouldShowError('muscle', 'muscleAmount')"
+          >
+            <ion-input
+              #muscleInput
+              type="number"
+              step="0.1"
+              min="0"
+              max="1000"
+              formControlName="muscleAmount"
+              [placeholder]="getMusclePlaceholder()"
+              clearInput="true"
+              aria-label="Muscle amount"
+              (ionFocus)="onInputFocus($event)"
+              (ionInput)="onFieldInput('muscle')"
+            ></ion-input>
+            <ion-note slot="end" class="unit-label">{{
+              getUnitAbbrev()
+            }}</ion-note>
+          </ion-item>
+          <ion-note
+            *ngIf="shouldShowError('muscle', 'muscleAmount')"
+            class="error-message"
+          >
+            Please enter a valid muscle amount
+          </ion-note>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="submit-section">
+          <ion-button
+            type="submit"
+            expand="full"
+            size="large"
+            [disabled]="!weightEntryForm.valid"
+            class="submit-button"
+          >
+            <ion-icon name="checkmark" slot="start"></ion-icon>
+            Save Entry
+          </ion-button>
+        </div>
       </form>
     </ion-content>
   </ng-template>
