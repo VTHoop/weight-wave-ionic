@@ -1,0 +1,162 @@
+ion-item.item-lines-none {
+  --border-width: 0;
+}
+
+.weight-entry-content {
+  // Use Ionic's default background, which automatically adapts to dark mode
+  --keyboard-offset: 0px;
+  --padding-bottom: calc(16px + var(--keyboard-offset));
+}
+
+.section-label {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--ion-text-color);
+  margin-bottom: 8px;
+  display: block;
+
+  &.required::after {
+    content: " *";
+    color: var(--ion-color-danger);
+  }
+}
+
+.date-section {
+  margin-bottom: 24px;
+
+  .date-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+
+    .date-picker {
+      flex: 1;
+    }
+
+    .today-button {
+      --padding-start: 12px;
+      --padding-end: 12px;
+      height: 44px;
+    }
+  }
+}
+
+.weight-section,
+.fat-section,
+.muscle-section {
+  .input-item {
+    &.item-has-error {
+      --border-radius: 12px;
+      --border-width: 2px;
+      --border-color: var(--ion-color-danger);
+    }
+  }
+}
+
+.weight-section {
+  margin-bottom: 24px;
+
+  .weight-input-item {
+    margin-top: 8px;
+  }
+}
+
+.fat-section,
+.muscle-section {
+  margin-bottom: 24px;
+}
+
+.unit-label {
+  color: var(--ion-color-medium);
+  font-weight: 500;
+  font-size: 0.9rem;
+  margin-left: 8px;
+}
+
+.error-message {
+  color: var(--ion-color-danger);
+  font-size: 0.85rem;
+  margin-top: 4px;
+  margin-left: 16px;
+  display: block;
+}
+
+.submit-section {
+  margin-top: 32px;
+  padding-bottom: 16px;
+
+  .submit-button {
+    --border-radius: 12px;
+    height: 52px;
+    font-weight: 600;
+    font-size: 1.1rem;
+
+    &:not(.button-disabled) {
+      --background: var(--ion-color-primary);
+      --color: var(--ion-color-primary-contrast);
+    }
+
+    &.button-disabled {
+      --background: var(--ion-color-light-shade);
+      --color: var(--ion-color-medium);
+    }
+  }
+}
+
+// Toast styling
+ion-toast {
+  --border-radius: 12px;
+  --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+// Responsive improvements for smaller screens
+@media (max-height: 600px) {
+  .weight-entry-content {
+    .section-label {
+      font-size: 1rem;
+      margin-bottom: 6px;
+    }
+
+    .date-section,
+    .weight-section,
+    .fat-section,
+    .muscle-section {
+      margin-bottom: 16px;
+    }
+
+    .submit-section {
+      margin-top: 20px;
+    }
+  }
+}
+
+// Remove all underlines
+:host ::ng-deep ion-item {
+  --border-style: none;
+  --inner-border-width: 0;
+}
+
+// Ensure no success/valid styling appears on any form elements
+:host ::ng-deep .item-has-value.item-has-focus.ion-valid,
+:host ::ng-deep .item-has-value.ion-valid,
+:host ::ng-deep .ion-valid {
+  --border-color: var(
+    --ion-item-border-color,
+    var(--ion-border-color, var(--ion-color-step-250, rgba(0, 0, 0, 0.13)))
+  ) !important;
+}
+
+// Additional keyboard handling for mobile
+ion-modal {
+  --max-height: 100vh;
+}
+
+// Ensure proper scrolling when keyboard appears
+.weight-entry-content {
+  overflow-y: auto;
+
+  &.keyboard-open {
+    --padding-bottom: 320px; // Space for keyboard
+  }
+}
