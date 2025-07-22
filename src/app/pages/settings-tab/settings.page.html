@@ -34,4 +34,24 @@
       <ion-button color="secondary" type="submit"> Submit </ion-button>
     </div>
   </form>
+
+  <div class="data-management">
+    <div class="data-management__header">Data Management</div>
+    <ion-button 
+      expand="block" 
+      fill="outline" 
+      color="primary"
+      (click)="exportData()">
+      <ion-icon name="download-outline" slot="start"></ion-icon>
+      Export Data
+    </ion-button>
+    <ion-button 
+      expand="block" 
+      fill="outline" 
+      color="secondary"
+      (click)="importData()">
+      <ion-icon name="cloud-upload-outline" slot="start"></ion-icon>
+      Import Data
+    </ion-button>
+  </div>
 </ion-content>

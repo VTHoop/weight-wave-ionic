@@ -13,6 +13,15 @@
   }
 }
 
+.data-management {
+  padding: 0 40px 40px;
+  &__header {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+}
+
 ion-content.ios{
   --padding-top: 40px;
 }

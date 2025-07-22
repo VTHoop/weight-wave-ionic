@@ -146,6 +146,50 @@ export class IonicStorageService {
     }
   }
 
+  public async bulkUpsertWeightLogEntries(entries: WeightLogId[]) {
+    const storedData: WeightLogId[] =
+      (await this.storage.get(WeightLogStorage.WeightLog)) || [];
+    
+    for (const entry of entries) {
+      const existingIndex = storedData.findIndex((existing) => existing.id === entry.id);
+      if (existingIndex !== -1) {
+        storedData[existingIndex] = entry;
+      } else {
+        storedData.push(entry);
+      }
+    }
+    
+    await this.storage.set(WeightLogStorage.WeightLog, storedData);
+    this.loadWeightLog();
+  }
+
+  public async bulkUpsertMacroLogEntries(entries: MacroLogId[]) {
+    const storedData: MacroLogId[] =
+      (await this.storage.get(WeightLogStorage.MacroLog)) || [];
+    
+    for (const entry of entries) {
+      const existingIndex = storedData.findIndex((existing) => existing.id === entry.id);
+      if (existingIndex !== -1) {
+        storedData[existingIndex] = entry;
+      } else {
+        storedData.push(entry);
+      }
+    }
+    
+    await this.storage.set(WeightLogStorage.MacroLog, storedData);
+    this.loadMacroLog();
+  }
+
+  public async replaceAllWeightLogEntries(entries: WeightLogId[]) {
+    await this.storage.set(WeightLogStorage.WeightLog, entries);
+    this.loadWeightLog();
+  }
+
+  public async replaceAllMacroLogEntries(entries: MacroLogId[]) {
+    await this.storage.set(WeightLogStorage.MacroLog, entries);
+    this.loadMacroLog();
+  }
+
   get settings$() {
     return this._userSettings$.asObservable();
   }
