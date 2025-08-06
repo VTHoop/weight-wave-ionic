@@ -11,9 +11,11 @@ import { IonicStorageModule } from '@ionic/storage-angular';
 import { Drivers } from '@ionic/storage';
 
 import * as CordovaSQLiteDriver from 'localforage-cordovasqlitedriver';
+import { PremiumFeatureDirective } from './directives/premium-feature.directive';
+import { PremiumPipe } from './pipes/premium.pipe';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, PremiumFeatureDirective, PremiumPipe],
   imports: [
     IonicStorageModule.forRoot({
       name: '__weightLogStorage',
