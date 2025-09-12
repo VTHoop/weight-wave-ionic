@@ -7,6 +7,32 @@
       <h2>{{ getSalutation() }}, {{ progressDisplay.name }}</h2>
     </ion-text>
 
+    <!-- Health Sync Button -->
+    <div class="health-sync-section" *ngIf="healthSyncStatus$ | async as syncStatus">
+      <ion-button 
+        fill="clear" 
+        size="small" 
+        (click)="onSyncHealthData()" 
+        [disabled]="syncStatus.isInProgress"
+        class="health-sync-button">
+        
+        <ion-spinner *ngIf="syncStatus.isInProgress" name="crescent" slot="start"></ion-spinner>
+        <ion-icon *ngIf="!syncStatus.isInProgress" name="fitness-outline" slot="start"></ion-icon>
+        
+        <span *ngIf="!syncStatus.isInProgress">Sync Health Data</span>
+        <span *ngIf="syncStatus.isInProgress">
+          Syncing... {{ syncStatus.processedEntries || 0 }}/{{ syncStatus.totalEntries || 0 }}
+        </span>
+      </ion-button>
+      
+      <!-- Last sync info -->
+      <div class="sync-info" *ngIf="syncStatus.lastSyncDate && !syncStatus.isInProgress">
+        <ion-text color="medium">
+          <small>Last synced: {{ syncStatus.lastSyncDate | date:'short' }}</small>
+        </ion-text>
+      </div>
+    </div>
+
     <div class="snapshot__header-filter">
       <h3>Since...</h3>
       <div class="snapshot__filter">

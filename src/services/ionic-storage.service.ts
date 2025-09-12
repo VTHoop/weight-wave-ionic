@@ -282,6 +282,14 @@ export class IonicStorageService {
       switchMap((_) => from(this.storage.keys() || of([])))
     );
   }
+
+  public async getValue(key: string): Promise<any> {
+    return await this.storage.get(key);
+  }
+
+  public async setValue(key: string, value: any): Promise<void> {
+    await this.storage.set(key, value);
+  }
 }
 
 export enum WeightLogStorage {

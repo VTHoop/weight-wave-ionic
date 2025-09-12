@@ -11,6 +11,7 @@ import { IonicStorageModule } from '@ionic/storage-angular';
 import { Drivers } from '@ionic/storage';
 
 import * as CordovaSQLiteDriver from 'localforage-cordovasqlitedriver';
+import { HealthSyncService } from 'src/services/health-sync.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -27,7 +28,10 @@ import * as CordovaSQLiteDriver from 'localforage-cordovasqlitedriver';
     AppRoutingModule,
     IonicModule.forRoot(),
   ],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
+  providers: [
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    HealthSyncService
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

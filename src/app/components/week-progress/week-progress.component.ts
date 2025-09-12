@@ -10,9 +10,11 @@ import {
 import { AverageWeight } from 'src/models/models/weight-log.model';
 import { Observable } from 'rxjs';
 import { MovingAverageService } from 'src/services/moving-average.service';
-import { AnimationController } from '@ionic/angular';
+import { AnimationController, ToastController, Platform } from '@ionic/angular';
 import { IonicStorageService } from 'src/services/ionic-storage.service';
 import { Camera, CameraSource, CameraResultType } from '@capacitor/camera';
+import { HealthSyncService, HealthSyncStatus } from 'src/services/health-sync.service';
+import { LoggerService } from 'src/services/logger.service';
 
 @Component({
   selector: 'app-week-progress',
@@ -37,12 +39,19 @@ export class WeekProgressComponent implements OnInit {
   weekToWeekComparison$: Observable<AverageWeight[]>;
   public ProgressPeriod: any = ProgressPeriod;
   selectedProgressPeriod = ProgressPeriod.Week;
+  healthSyncStatus$: Observable<HealthSyncStatus>;
 
   constructor(
     public movingAverageService: MovingAverageService,
     public ionicStorageService: IonicStorageService,
-    private animationCtrl: AnimationController
-  ) {}
+    private animationCtrl: AnimationController,
+    private healthSyncService: HealthSyncService,
+    private toastController: ToastController,
+    private platform: Platform,
+    private logger: LoggerService
+  ) {
+    this.healthSyncStatus$ = this.healthSyncService.syncStatus$;
+  }
 
   ngOnInit(): void {}
 
@@ -113,6 +122,55 @@ export class WeekProgressComponent implements OnInit {
       resultType: CameraResultType.Uri,
     });
     this.ionicStorageService.saveProfilePic(image.webPath);
+  }
+
+  async onSyncHealthData() {
+    try {
+      if (this.platform.is('hybrid')) {
+        // Get detailed diagnostic information first
+        this.logger.debug('=== Starting Health Sync Diagnostics ===');
+        const healthInfo = await this.healthSyncService.getHealthServiceInfo();
+        this.logger.debug('Health service info:', healthInfo);
+        
+        // Check if health services are available
+        const isAvailable = await this.healthSyncService.isHealthAvailable();
+        this.logger.debug('Health available result:', isAvailable);
+        
+        if (!isAvailable) {
+          await this.showToast('Health services not available on this device. Check console for details.', 'warning');
+          return;
+        }
+        
+        await this.healthSyncService.syncWeightData();
+      } else {
+        // Web testing
+        await this.healthSyncService.testSync();
+      }
+      
+      // Show success message with sync details
+      const status = await this.healthSyncService.syncStatus$.pipe().toPromise();
+      const message = status.newEntries > 0 
+        ? `Synced ${status.newEntries} new weight entries`
+        : 'No new weight data found';
+      
+      await this.showToast(message, 'success');
+      
+    } catch (error) {
+      this.logger.error('Health sync failed:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to sync health data';
+      await this.showToast(errorMessage, 'danger');
+    }
+  }
+
+
+  private async showToast(message: string, color: string) {
+    const toast = await this.toastController.create({
+      message,
+      duration: 3000,
+      color,
+      position: 'bottom'
+    });
+    await toast.present();
   }
 }
 
